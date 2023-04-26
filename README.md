@@ -64,3 +64,11 @@ cd <cloned-directory>
 ./scripts/deploy.sh all
 ```
 
+
+
+## Teardown Boundary Enterprise Cluster
+```
+cd <cloned-directory>
+
+./scripts/destroy.sh
+```
