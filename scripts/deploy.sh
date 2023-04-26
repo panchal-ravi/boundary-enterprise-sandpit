@@ -1,5 +1,5 @@
 #!/bin/bash
-TFDIR=/Users/ravipanchal/learn/boundary/boundary-enterprise-sandpit/
+TFDIR=$(pwd)
 
 if [ $# -eq 0 ]; then
     echo -e Usage: \"deploy.sh \<ssh\> \<db\> \<win\> \<k8s\>\" to deploy selected targets

@@ -1,5 +1,5 @@
 #!/bin/bash
-TFDIR=/Users/ravipanchal/learn/boundary/boundary-enterprise-sandpit/
+TFDIR=$(pwd)
 
 cd $TFDIR
 echo -e "\n\n\n----Starting Vault Session----\n\n\n"
