@@ -57,7 +57,7 @@ resource "aws_instance" "controller" {
   ami             = data.aws_ami.an_image.id
   instance_type   = var.instance_type
   key_name        = aws_key_pair.this.key_name
-  subnet_id       = element(module.vpc.private_subnets, 1)
+  subnet_id       = element(module.vpc.private_subnets, count.index % length(module.vpc.private_subnets))
   security_groups = [module.controller_sg.security_group_id]
 
   lifecycle {
