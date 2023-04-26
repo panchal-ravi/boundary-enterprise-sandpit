@@ -43,7 +43,7 @@ git clone https://github.com/panchal-ravi/boundary-enterprise-sandpit
 cd <cloned-directory>
 ```
 
-## Build Boundary Enterprise self-managed worker image using packer
+## Build Boundary Enterprise image using packer
 ```sh
 cd amis/boundary
 # Verify region is set correctly in variables.pkrvars.hcl file
