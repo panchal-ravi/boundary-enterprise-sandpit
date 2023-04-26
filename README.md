@@ -51,7 +51,7 @@ packer build -var-file="variables.pkrvars.hcl" .
 ```
 
 ## Setup Boundary Enterprise Cluster
-```
+```sh
 cd <cloned-directory>
 
 # To deploy selected targets i.e. SSH, Windows, Database and Kubernetes 
@@ -67,7 +67,7 @@ cd <cloned-directory>
 
 
 ## Teardown Boundary Enterprise Cluster
-```
+```sh
 cd <cloned-directory>
 
 ./scripts/destroy.sh
