@@ -1,0 +1,12 @@
+.terraform/
+files/k8s
+files/boundary/boundary-deployment.yaml
+files/boundary/license.hclic
+modules/cluster/aws/tmp/*
+scripts/test*
+json
+generated/*
+.envrc
+kubeconfig
+terraform.tfstate*
+.terraform*
