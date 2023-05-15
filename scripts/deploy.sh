@@ -19,16 +19,20 @@ fi
 echo -e "\n\n\n----Creating Boundary Cluster----\n\n\n"
 
 terraform apply -target module.boundary-cluster -auto-approve
-sleep 5
+sleep 15
 
 echo -e "\n\n\n----Creating Boundary Resources----\n\n\n"
 
 terraform apply -target module.boundary-resources -auto-approve
-sleep 5
+sleep 10
 
 echo -e "\n\n\n----Starting Vault Session----\n\n\n"
-$TFDIR/scripts/start-vault.sh
-sleep 5
+while [ $(lsof -i -P -n | grep LISTEN | grep -i 8200 | wc -l) -eq 0 ]
+do
+    $TFDIR/scripts/start-vault.sh
+    sleep 5
+done
+sleep 10
 
 echo -e "\n\n\n----Creating Vault Credential Store----\n\n\n"
 terraform apply -target module.vault-credstore -auto-approve

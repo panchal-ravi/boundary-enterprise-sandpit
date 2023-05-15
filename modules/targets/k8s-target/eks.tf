@@ -33,7 +33,7 @@ module "eks" {
       min_size               = 1
       max_size               = 3
       desired_size           = 2
-      instance_types         = ["t3.micro"]
+      instance_types         = ["t3.medium"]
       key_name               = var.aws_keypair_keyname
       vpc_security_group_ids = [module.private-ssh.security_group_id]
     }
@@ -58,12 +58,14 @@ resource "kubernetes_namespace" "test" {
   metadata {
     name = "test"
   }
+  depends_on = [ module.eks ]
 }
 
 resource "kubernetes_namespace" "vault" {
   metadata {
     name = "vault"
   }
+  depends_on = [ module.eks ]
 }
 
 resource "kubernetes_service_account_v1" "vault" {
@@ -71,6 +73,7 @@ resource "kubernetes_service_account_v1" "vault" {
     name      = "vault"
     namespace = "vault"
   }
+  depends_on = [kubernetes_namespace.vault]
 }
 
 
@@ -99,6 +102,7 @@ resource "kubernetes_cluster_role_v1" "vault_role" {
     resources  = ["roles", "clusterroles"]
     verbs      = ["bind", "escalate", "create", "update", "delete"]
   }
+  depends_on = [ module.eks ]
 }
 
 resource "kubernetes_cluster_role_binding_v1" "vault_role_binding" {
@@ -114,17 +118,19 @@ resource "kubernetes_cluster_role_binding_v1" "vault_role_binding" {
 
   subject {
     kind      = "ServiceAccount"
-    name      = "${kubernetes_service_account_v1.vault.metadata.0.name}"
-    namespace = "${kubernetes_service_account_v1.vault.metadata.0.namespace}"
+    name      = kubernetes_service_account_v1.vault.metadata.0.name
+    namespace = kubernetes_service_account_v1.vault.metadata.0.namespace
   }
+  depends_on = [ module.eks ]
 }
 
 
 data "kubernetes_secret_v1" "vault" {
   metadata {
-    name = "${kubernetes_service_account_v1.vault.default_secret_name}"
-    namespace = "${kubernetes_service_account_v1.vault.metadata.0.namespace}"
+    name      = kubernetes_service_account_v1.vault.default_secret_name
+    namespace = kubernetes_service_account_v1.vault.metadata.0.namespace
   }
+  depends_on = [ module.eks ]
 }
 
 provider "kubernetes" {
@@ -135,12 +141,12 @@ provider "kubernetes" {
 
 resource "local_file" "vault_k8s_token" {
   filename = "${path.root}/generated/vault-k8s-token"
-  content = "${data.kubernetes_secret_v1.vault.data.token}"
+  content  = data.kubernetes_secret_v1.vault.data.token
 }
 
 resource "local_file" "k8s_ca_cert" {
   filename = "${path.root}/generated/k8s_ca.crt"
-  content = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
+  content  = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
 }
 
 resource "null_resource" "kubeconfig" {
@@ -153,7 +159,7 @@ resource "null_resource" "kubeconfig" {
   ]
 }
 
-resource "null_resource" "delete_k8s" {
+/* resource "null_resource" "delete_k8s" {
 
   provisioner "local-exec" {
     when    = destroy
@@ -161,7 +167,7 @@ resource "null_resource" "delete_k8s" {
       rm ${path.root}/generated/k8s_ca.crt 
       EOD
   }
-}
+} */
 
 
 

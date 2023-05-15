@@ -2,12 +2,23 @@ output "controller_ips" {
   value = aws_instance.controller[*].private_ip
 }
 
+output "controller_ops_address" {
+  value = [for instance in aws_instance.controller: "${instance.private_ip}:9203"]
+}
+
+output "controller_node_exporter_address" {
+  value = [for instance in aws_instance.controller: "${instance.private_ip}:9100"]
+}
+
 output "bastion_ip" {
   value = aws_instance.bastion.public_ip
 }
 
 output "ingress_worker_ip" {
   value = aws_instance.ingress_worker.public_ip
+}
+output "ingress_worker_private_ip" {
+  value = aws_instance.ingress_worker.private_ip
 }
 
 output "egress_worker_ip" {

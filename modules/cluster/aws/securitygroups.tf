@@ -85,6 +85,13 @@ module "controller_sg" {
       cidr_blocks = module.vpc.vpc_cidr_block
     },
     {
+      from_port   = 9100
+      to_port     = 9100
+      protocol    = "tcp"
+      description = "node-metrics prometheus exporter"
+      cidr_blocks = module.vpc.vpc_cidr_block
+    },
+    {
       from_port   = 9201
       to_port     = 9201
       protocol    = "tcp"
@@ -126,6 +133,20 @@ module "ingress_worker_sg" {
       protocol    = "tcp"
       description = "boundary-worker proxy port"
       cidr_blocks = "0.0.0.0/0"
+    },
+    {
+      from_port   = 9203
+      to_port     = 9203
+      protocol    = "tcp"
+      description = "boundary-worker ops port"
+      cidr_blocks = module.vpc.vpc_cidr_block
+    },
+    {
+      from_port   = 9100
+      to_port     = 9100
+      protocol    = "tcp"
+      description = "node-metrics prometheus exporter"
+      cidr_blocks = module.vpc.vpc_cidr_block
     }
   ]
 
@@ -145,6 +166,22 @@ module "egress_worker_sg" {
       source_security_group_id = module.bastion_sg.security_group_id
     }
   ]
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 9203
+      to_port     = 9203
+      protocol    = "tcp"
+      description = "boundary-worker ops port"
+      cidr_blocks = module.vpc.vpc_cidr_block
+    },
+    {
+      from_port   = 9100
+      to_port     = 9100
+      protocol    = "tcp"
+      description = "node-metrics prometheus exporter"
+      cidr_blocks = module.vpc.vpc_cidr_block
+    }
+  ]
   egress_rules       = ["all-all"]
   egress_cidr_blocks = ["0.0.0.0/0"]
 }
@@ -153,9 +190,9 @@ module "egress_worker_sg" {
 module "vault_sg" {
   source = "terraform-aws-modules/security-group/aws"
 
-  name                = "${var.deployment_id}-vault"
-  description         = "vault inbound"
-  vpc_id              = module.vpc.vpc_id
+  name        = "${var.deployment_id}-vault"
+  description = "vault inbound"
+  vpc_id      = module.vpc.vpc_id
   ingress_with_source_security_group_id = [
     {
       rule                     = "ssh-tcp"

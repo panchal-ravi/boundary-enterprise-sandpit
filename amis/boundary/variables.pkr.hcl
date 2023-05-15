@@ -6,7 +6,7 @@ variable "owner" {
 variable "boundary_version" {
   type = string
   description = "Three digit Boundary version to work with"
-  default = "0.11.0+hcp"
+  default = "0.12.0+hcp"
 }
 variable "aws_region" {
   type        = string

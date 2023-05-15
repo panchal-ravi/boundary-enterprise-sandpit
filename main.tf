@@ -138,5 +138,11 @@ module "k8s-target" {
   boundary_cluster_address          = module.boundary-cluster.boundary_cluster_url
   boundary_user                     = "admin"
   boundary_password                 = trimspace(file("${path.root}/generated/boundary_password"))
+  controller_ops_address            = module.boundary-cluster.controller_ops_address
+  controller_node_exporter_address  = module.boundary-cluster.controller_node_exporter_address
+  ingress_worker_ip                 = module.boundary-cluster.ingress_worker_private_ip
+  egress_worker_ip                  = module.boundary-cluster.egress_worker_ip
+  bastion_ip                        = module.boundary-cluster.bastion_ip
+  controller_ips                    = module.boundary-cluster.controller_ips
   owner                             = var.owner
 }

@@ -9,4 +9,7 @@ generated/*
 .envrc
 kubeconfig
 terraform.tfstate*
+tcpdump*
+*kubeconfig*
 .terraform*
+*.DS_Store

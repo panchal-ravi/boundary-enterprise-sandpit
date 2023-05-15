@@ -39,9 +39,9 @@ listener "tcp"{
   # The purpose of this listener block
   purpose = "ops"
 
-  tls_disable   = false
-  tls_cert_file = "/etc/boundary.d/tls/boundary-cert.pem"
-  tls_key_file  = "/etc/boundary.d/tls/boundary-key.pem"
+  tls_disable   = true
+  # tls_cert_file = "/etc/boundary.d/tls/boundary-cert.pem"
+  # tls_key_file  = "/etc/boundary.d/tls/boundary-key.pem"
 }
 
 # Controller configuration block
@@ -86,9 +86,14 @@ events {
     name = "file-sink"
     description = "All events sent to a file"
     event_types = [
-      "*"
+      "audit"
     ]
     format = "cloudevents-json"
+    deny_filters = [
+      "\"/data/request_info/method\" contains \"ServerCoordinationService\"",
+      "\"/data/request_info/path\" contains \"assets\"",
+      "\"/data/request_info/path\" contains \"core\""
+    ]
     file {
       path = "/var/log/boundary"
       file_name = "controller.log"

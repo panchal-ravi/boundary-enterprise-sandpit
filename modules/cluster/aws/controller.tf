@@ -122,6 +122,11 @@ resource "aws_instance" "controller" {
     destination = "/home/ubuntu/ssh_key"
   }
 
+  provisioner "file" {
+    source      = "${path.root}/files/observability/node-exporter.service"
+    destination = "/tmp/node-exporter.service"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sudo base64 -d /tmp/install_base64.sh > /tmp/install.sh",
@@ -133,6 +138,23 @@ resource "aws_instance" "controller" {
       "sudo mv /tmp/license.hclic /etc/boundary.d/license.hclic",
       "sudo mv /tmp/boundary-key.pem /etc/boundary.d/tls/boundary-key.pem",
       "sudo mv /tmp/boundary-cert.pem /etc/boundary.d/tls/boundary-cert.pem",
+
+      "sudo mv /tmp/node-exporter.service /etc/systemd/system/node_exporter.service",
+      "sudo groupadd -f node_exporter",
+      "sudo useradd -g node_exporter --no-create-home --shell /bin/false node_exporter",
+      "sudo mkdir /etc/node_exporter.d",
+      "sudo chown node_exporter:node_exporter /etc/node_exporter.d",
+      "sudo wget https://github.com/prometheus/node_exporter/releases/download/v1.5.0/node_exporter-1.5.0.linux-amd64.tar.gz",
+      "sudo tar -xvf node_exporter-1.5.0.linux-amd64.tar.gz",
+      "sudo mv node_exporter-1.5.0.linux-amd64 node_exporter-files",
+      "sudo cp node_exporter-files/node_exporter /usr/local/bin/",
+      "sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter",
+      "sudo chmod 664 /etc/systemd/system/node_exporter.service",
+
+      "wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -",
+      "echo \"deb https://artifacts.elastic.co/packages/8.x/apt stable main\" | sudo tee -a /etc/apt/sources.list.d/elastic-8.x.list",
+      "sudo apt-get update && sudo apt-get install filebeat",
+
       "sudo chmod +x /home/ubuntu/install.sh",
       "sudo chmod 400 /home/ubuntu/ssh_key",
       "sudo /home/ubuntu/install.sh controller",
@@ -140,7 +162,11 @@ resource "aws_instance" "controller" {
       "sudo /bin/sh -c \"if [ -s db_init.json ]; then jq -r '.auth_method.password' db_init.json; fi\" > /home/ubuntu/boundary_password",
       "sudo /bin/sh -c \"if [ -s db_init.json ]; then jq -r '.auth_method.auth_method_id' db_init.json; fi\" > /home/ubuntu/global_auth_method_id",
       "sleep 20",
+
+      "sudo systemctl daemon-reload",
       "sudo systemctl start boundary-controller",
+      "sudo systemctl start node_exporter",
+      "sudo systemctl enable filebeat",
       "sleep 10",
     ]
   }
@@ -201,6 +227,8 @@ resource "null_resource" "delete" {
       rm ${path.root}/generated/kms_recovery.hcl
       rm ${path.root}/generated/vault_credstore_id
       rm ${path.root}/generated/k8s_auth_request_token || true
+      rm ${path.root}/generated/k8s_ca.crt || true
+      rm ${path.root}/kubeconfig || true
       EOD
   }
 }

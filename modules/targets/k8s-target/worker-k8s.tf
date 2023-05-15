@@ -110,6 +110,29 @@ resource "kubernetes_service_v1" "service" {
   }
 }
 
+resource "kubernetes_service_v1" "worker_service_internal" {
+  metadata {
+    name = "boundary-k8s-worker-svc-internal"
+    annotations = {
+      "prometheus.io/port"   = "9203"
+      "prometheus.io/scrape" = "true"
+    }
+  }
+  spec {
+    selector = {
+      app       = "boundary",
+      component = "worker",
+      env       = "k8s"
+    }
+    port {
+      port        = 9203
+      target_port = 9203
+      name        = "ops"
+    }
+  }
+}
+
+
 resource "null_resource" "register_k8s_worker" {
   provisioner "local-exec" {
     command = "kubectl exec -i $(kubectl get po -oname --kubeconfig ${path.root}/kubeconfig | grep -i boundary) --kubeconfig ${path.root}/kubeconfig -- cat /home/boundary/worker1/auth_request_token > ${path.root}/generated/k8s_auth_request_token"
@@ -122,10 +145,10 @@ resource "null_resource" "register_k8s_worker" {
       export BOUNDARY_TLS_INSECURE=true
       boundary workers create worker-led -scope-id=global -worker-generated-auth-token=${trimspace(file("${path.root}/generated/k8s_auth_request_token"))}
       EOD
-    }
+  }
 
   depends_on = [
-    kubernetes_stateful_set_v1.statefulset
+    null_resource.kubeconfig, kubernetes_stateful_set_v1.statefulset
   ]
 }
 

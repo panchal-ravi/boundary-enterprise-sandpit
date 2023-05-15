@@ -62,3 +62,21 @@ variable "boundary_user" {
 variable "boundary_password" {
   type = string
 }
+variable "controller_ops_address" {
+  type = list(string)
+}
+variable "controller_node_exporter_address" {
+  type = list(string)
+}
+variable "ingress_worker_ip" {
+  type = string
+}
+variable "egress_worker_ip" {
+  type = string
+}
+variable "bastion_ip" {
+  type = string
+}
+variable "controller_ips" {
+  type = list(string)
+}
