@@ -101,6 +101,13 @@ variable "rds_password" {
   type = string
 }
 
+variable "boundary_admin_username" {
+  type = string
+}
+variable "boundary_admin_password" {
+  type = string
+}
+
 /* 
 variable "rdp_username" {
   type = string

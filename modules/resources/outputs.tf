@@ -29,3 +29,10 @@ output "static_credstore_id" {
 output "static_db_creds_id" {
   value = boundary_credential_username_password.static_db_creds.id
 }
+
+output "global_auth_method_id" {
+  value = boundary_auth_method_password.password.id
+}
+output "boundary_admin_userid" {
+  value = boundary_account_password.admin.id
+}

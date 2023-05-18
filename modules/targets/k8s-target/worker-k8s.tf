@@ -6,7 +6,8 @@ resource "kubernetes_config_map" "config" {
   data = {
     "boundary-worker.hcl" = "${templatefile("${path.root}/files/boundary/boundary-worker-k8s-configmap.hcl.tpl", {
       controller_lb_dns = var.boundary_cluster_address_internal,
-      public_addr       = kubernetes_service_v1.service.status.0.load_balancer.0.ingress.0.hostname
+      public_addr       = kubernetes_service_v1.service.status.0.load_balancer.0.ingress.0.hostname,
+      activation_token  = boundary_worker.k8s_worker.controller_generated_activation_token,
     })}"
   }
 }
@@ -132,7 +133,7 @@ resource "kubernetes_service_v1" "worker_service_internal" {
   }
 }
 
-
+/*
 resource "null_resource" "register_k8s_worker" {
   provisioner "local-exec" {
     command = "kubectl exec -i $(kubectl get po -oname --kubeconfig ${path.root}/kubeconfig | grep -i boundary) --kubeconfig ${path.root}/kubeconfig -- cat /home/boundary/worker1/auth_request_token > ${path.root}/generated/k8s_auth_request_token"
@@ -151,5 +152,11 @@ resource "null_resource" "register_k8s_worker" {
     null_resource.kubeconfig, kubernetes_stateful_set_v1.statefulset
   ]
 }
+*/
 
-
+resource "boundary_worker" "k8s_worker" {
+  description                 = "k8s worker"
+  name                        = "k8s-worker"
+  scope_id                    = "global"
+  worker_generated_auth_token = ""
+}

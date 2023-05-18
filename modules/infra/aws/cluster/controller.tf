@@ -158,9 +158,9 @@ resource "aws_instance" "controller" {
       "sudo chmod +x /home/ubuntu/install.sh",
       "sudo chmod 400 /home/ubuntu/ssh_key",
       "sudo /home/ubuntu/install.sh controller",
-      "sudo /bin/sh -c \"if [ ${count.index} -eq 0 ]; then POSTGRESQL_CONNECTION_STRING='postgresql://${var.controller_db_username}:${var.controller_db_password}@${aws_db_instance.this.address}:5432/${aws_db_instance.this.db_name}' /usr/local/bin/boundary database init -skip-host-resources-creation -skip-scopes-creation -skip-target-creation -config /etc/boundary.d/boundary-controller.hcl -format json > /home/ubuntu/db_init.json; fi\"",
-      "sudo /bin/sh -c \"if [ -s db_init.json ]; then jq -r '.auth_method.password' db_init.json; fi\" > /home/ubuntu/boundary_password",
-      "sudo /bin/sh -c \"if [ -s db_init.json ]; then jq -r '.auth_method.auth_method_id' db_init.json; fi\" > /home/ubuntu/global_auth_method_id",
+      "sudo /bin/sh -c \"if [ ${count.index} -eq 0 ]; then POSTGRESQL_CONNECTION_STRING='postgresql://${var.controller_db_username}:${var.controller_db_password}@${aws_db_instance.this.address}:5432/${aws_db_instance.this.db_name}' /usr/local/bin/boundary database init -skip-host-resources-creation  -skip-auth-method-creation -skip-scopes-creation -skip-target-creation -config /etc/boundary.d/boundary-controller.hcl -format json > /home/ubuntu/db_init.json; fi\"",
+      /* "sudo /bin/sh -c \"if [ -s db_init.json ]; then jq -r '.auth_method.password' db_init.json; fi\" > /home/ubuntu/boundary_password", */
+      /* "sudo /bin/sh -c \"if [ -s db_init.json ]; then jq -r '.auth_method.auth_method_id' db_init.json; fi\" > /home/ubuntu/global_auth_method_id", */
       "sleep 20",
 
       "sudo systemctl daemon-reload",
@@ -189,13 +189,20 @@ resource "aws_instance" "controller" {
 
 resource "null_resource" "copy" {
 
-  provisioner "local-exec" {
+  /* provisioner "local-exec" {
     command = <<-EOT
       ssh -o StrictHostKeyChecking=no -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip} "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /home/ubuntu/ssh_key ubuntu@${aws_instance.controller[0].private_ip}:/home/ubuntu/boundary_password /home/ubuntu/boundary_password"
       ssh -o StrictHostKeyChecking=no -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip} "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /home/ubuntu/ssh_key ubuntu@${aws_instance.controller[0].private_ip}:/home/ubuntu/global_auth_method_id /home/ubuntu/global_auth_method_id"
       ssh -o StrictHostKeyChecking=no -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip} "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /home/ubuntu/ssh_key ubuntu@${aws_instance.controller[0].private_ip}:/etc/boundary.d/boundary-recovery-kms.hcl /home/ubuntu/kms_recovery.hcl"
       scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip}:/home/ubuntu/boundary_password ./generated/
       scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip}:/home/ubuntu/global_auth_method_id ./generated/
+      scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip}:/home/ubuntu/kms_recovery.hcl ./generated/
+      EOT
+  } */
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      ssh -o StrictHostKeyChecking=no -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip} "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /home/ubuntu/ssh_key ubuntu@${aws_instance.controller[0].private_ip}:/etc/boundary.d/boundary-recovery-kms.hcl /home/ubuntu/kms_recovery.hcl"
       scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip}:/home/ubuntu/kms_recovery.hcl ./generated/
       EOT
   }
@@ -222,13 +229,16 @@ resource "null_resource" "delete" {
   provisioner "local-exec" {
     when    = destroy
     command = <<-EOD
-      rm ${path.root}/generated/boundary_password 
-      rm ${path.root}/generated/global_auth_method_id 
       rm ${path.root}/generated/kms_recovery.hcl
-      rm ${path.root}/generated/vault_credstore_id
       rm ${path.root}/generated/k8s_auth_request_token || true
       rm ${path.root}/generated/k8s_ca.crt || true
       rm ${path.root}/kubeconfig || true
       EOD
+      
+      /* 
+      rm ${path.root}/generated/vault_credstore_id
+      rm ${path.root}/generated/boundary_password || true
+      rm ${path.root}/generated/global_auth_method_id || true 
+      */
   }
 }

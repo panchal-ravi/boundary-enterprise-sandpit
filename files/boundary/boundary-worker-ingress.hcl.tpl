@@ -18,6 +18,7 @@ worker {
     public_addr = "${public_ip}"
     initial_upstreams = ["${controller_lb_dns}:9201"]
     auth_storage_path = "/etc/boundary.d/auth_storage"
+    controller_generated_activation_token = "${activation_token}"
     tags {
         type = ["ingress", "upstream", "worker1"]
     }

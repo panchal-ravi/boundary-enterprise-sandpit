@@ -1,3 +1,10 @@
+resource "boundary_auth_method_password" "password" {
+  scope_id              = boundary_scope.global.id
+  description           = "Password authenticate method"
+  min_login_name_length = 5
+  min_password_length   = 8
+}
+
 resource "boundary_auth_method_oidc" "auth0_oidc" {
   scope_id             = boundary_scope.org.id
   name                 = "Auth0"

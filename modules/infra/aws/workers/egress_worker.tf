@@ -1,9 +1,9 @@
 resource "aws_instance" "egress_worker" {
-  ami             = data.aws_ami.an_image.id
+  ami             = data.aws_ami.worker_image.id
   instance_type   = var.instance_type
-  key_name        = aws_key_pair.this.key_name
-  subnet_id       = element(module.vpc.private_subnets, 1)
-  security_groups = [module.egress_worker_sg.security_group_id]
+  key_name        = var.aws_keypair_key_name
+  subnet_id       = element(var.private_subnets, 1)
+  security_groups = [var.worker_egress_security_group_id]
 
   lifecycle {
     ignore_changes = all
@@ -21,15 +21,16 @@ resource "aws_instance" "egress_worker" {
 
   provisioner "file" {
     content = templatefile("${path.root}/files/boundary/boundary-worker-egress.hcl.tpl", {
-      private_ip         = self.private_ip,
-      upstream_worker_ip = aws_instance.ingress_worker.private_ip,
+      private_ip              = self.private_ip,
+      upstream_worker_ip      = aws_instance.ingress_worker.private_ip,
       worker_auth_storage_kms = random_id.worker_auth_storage_kms.b64_std,
+      activation_token        = boundary_worker.egress_worker.controller_generated_activation_token
     })
     destination = "/tmp/boundary-worker.hcl"
   }
 
   provisioner "file" {
-    content     = tls_private_key.ssh.private_key_openssh
+    content     = file("${path.root}/generated/ssh_key")
     destination = "/home/ubuntu/ssh_key"
   }
 
@@ -67,52 +68,26 @@ resource "aws_instance" "egress_worker" {
       "sudo systemctl start node_exporter",
       "sudo systemctl start boundary-worker",
       "sleep 10",
-      "sudo chmod 664 /etc/boundary.d/auth_storage/auth_request_token",
     ]
   }
 
-  provisioner "local-exec" {
-    command = <<-EOT
-      ssh -o StrictHostKeyChecking=no -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip} "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /home/ubuntu/ssh_key ubuntu@${self.private_ip}:/etc/boundary.d/auth_storage/auth_request_token /home/ubuntu/egress_worker_auth_token"
-      scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip}:/home/ubuntu/egress_worker_auth_token ./generated/
-      EOT
-  }
 
   connection {
-    bastion_host        = aws_instance.bastion.public_ip
+    bastion_host        = var.bastion_ip 
     bastion_user        = "ubuntu"
     agent               = false
-    bastion_private_key = tls_private_key.ssh.private_key_openssh
+    bastion_private_key = file("${path.root}/generated/ssh_key") 
 
     host        = self.private_ip
     user        = "ubuntu"
-    private_key = tls_private_key.ssh.private_key_openssh
+    private_key = file("${path.root}/generated/ssh_key") 
   }
 
-
-  depends_on = [
-    local_file.private_key,
-    aws_instance.controller
-  ]
 }
 
-resource "null_resource" "register_worker_egress" {
-
-  provisioner "local-exec" {
-    command = "export BOUNDARY_ADDR=https://${aws_lb.controller_lb.dns_name} && export BOUNDARY_RECOVERY_CONFIG=${path.root}/generated/kms_recovery.hcl && export BOUNDARY_TLS_INSECURE=true && boundary workers create worker-led -scope-id=global -worker-generated-auth-token=${trimspace(file("${path.root}/generated/egress_worker_auth_token"))}"
-  }
-
-  depends_on = [
-    aws_instance.egress_worker
-  ]
-}
-
-resource "null_resource" "delete_egress_worker_auth_token" {
-
-  provisioner "local-exec" {
-    when    = destroy
-    command = <<-EOD
-      rm ${path.root}/generated/egress_worker_auth_token 
-      EOD
-  }
+resource "boundary_worker" "egress_worker" {
+  description                 = "egress worker"
+  name                        = "egress-worker"
+  scope_id                    = "global"
+  worker_generated_auth_token = "" 
 }

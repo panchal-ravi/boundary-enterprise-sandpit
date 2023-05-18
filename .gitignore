@@ -2,7 +2,7 @@
 files/k8s
 files/boundary/boundary-deployment.yaml
 files/boundary/license.hclic
-modules/cluster/aws/tmp/*
+modules/infra/aws/cluster/tmp/*
 scripts/test*
 json
 generated/*

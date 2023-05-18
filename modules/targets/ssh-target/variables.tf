@@ -32,12 +32,12 @@ variable "project_id" {
 variable "org_id" {
   type = string
 }
-variable "boundary_cluster_url" {
+/* variable "boundary_cluster_url" {
   type = string
-}
-variable "boundary_password" {
+} */
+/* variable "boundary_password" {
   type = string
-}
+} */
 variable "worker_egress_security_group_id" {
   type = string
 }

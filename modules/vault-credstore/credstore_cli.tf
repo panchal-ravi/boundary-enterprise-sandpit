@@ -1,3 +1,4 @@
+/*
 resource "null_resource" "cred_store" {
 
   connection {
@@ -67,3 +68,4 @@ resource "vault_token" "boundary" {
     "purpose" = "boundary-service-account"
   }
 }
+*/

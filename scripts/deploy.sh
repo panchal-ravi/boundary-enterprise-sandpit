@@ -2,7 +2,7 @@
 TFDIR=$(pwd)
 
 if [ $# -eq 0 ]; then
-    echo -e Usage: \"deploy.sh \<ssh\> \<db\> \<win\> \<k8s\>\" to deploy selected targets
+    echo -e Usage: \"deploy.sh \<ssh\> \<db\> \<win\>\" to deploy selected targets
     echo -e Usage: \"deploy.sh all\" to deploy all targets
     exit 1
 else
@@ -11,7 +11,7 @@ fi
 
 
 cd $TFDIR
-if [ ! -f "$TFDIR/generated/boundary_password" ]
+if [ ! -f "$TFDIR/generated/ssh_key" ]
 then 
     $TFDIR/scripts/setup.sh $TFDIR
 fi
@@ -20,6 +20,12 @@ echo -e "\n\n\n----Creating Boundary Cluster----\n\n\n"
 
 terraform apply -target module.boundary-cluster -auto-approve
 sleep 15
+
+export BOUNDARY_ADDR=https://$(terraform output -raw boundary_cluster_url)
+echo -e "\n\n\n----Creating Boundary Workers----\n\n\n"
+
+terraform apply -target module.boundary-workers -auto-approve
+sleep 10
 
 echo -e "\n\n\n----Creating Boundary Resources----\n\n\n"
 
@@ -38,6 +44,10 @@ echo -e "\n\n\n----Creating Vault Credential Store----\n\n\n"
 terraform apply -target module.vault-credstore -auto-approve
 sleep 5
 
+echo -e "\n\n\n----Creating Kubernetes Target----\n\n\n"
+terraform apply -target module.k8s-target -auto-approve
+sleep 10
+
 for target in "$@"
 do
     if [[ $target = "ssh" || $target = "all" ]]; then
@@ -54,10 +64,6 @@ do
 
         echo -e "\n\n\n----Creating Windows RDP Target----\n\n\n"
         terraform apply -target module.rdp-target -auto-approve
-    fi
-    if [[ $target = "k8s" || $target = "all" ]]; then
-        echo -e "\n\n\n----Creating Kubernetes Target----\n\n\n"
-        terraform apply -target module.k8s-target -auto-approve
     fi
 done
 

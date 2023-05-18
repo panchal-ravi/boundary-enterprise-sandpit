@@ -19,7 +19,7 @@ resource "vault_database_secret_backend_role" "role_admin" {
   db_name             = vault_database_secret_backend_connection.postgres.name
   creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; GRANT dba TO \"{{name}}\";"]
   default_ttl         = 300
-  max_ttl             = 300
+  max_ttl             = 600
 }
 
 resource "vault_database_secret_backend_role" "role_analyst" {
@@ -28,5 +28,5 @@ resource "vault_database_secret_backend_role" "role_analyst" {
   db_name             = vault_database_secret_backend_connection.postgres.name
   creation_statements = ["CREATE ROLE \"{{name}}\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; GRANT analyst TO \"{{name}}\";"]
   default_ttl         = 300
-  max_ttl             = 300
+  max_ttl             = 600
 }

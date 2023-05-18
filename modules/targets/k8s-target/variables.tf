@@ -50,18 +50,19 @@ variable "db_password" {
 variable "region" {
   type = string
 }
-variable "boundary_cluster_address" {
-  type = string
-}
 variable "boundary_cluster_address_internal" {
   type = string
 }
+/*
+variable "boundary_cluster_address" {
+  type = string
+} 
 variable "boundary_user" {
   type = string
 }
 variable "boundary_password" {
   type = string
-}
+} */
 variable "controller_ops_address" {
   type = list(string)
 }

@@ -14,17 +14,6 @@ output "bastion_ip" {
   value = aws_instance.bastion.public_ip
 }
 
-output "ingress_worker_ip" {
-  value = aws_instance.ingress_worker.public_ip
-}
-output "ingress_worker_private_ip" {
-  value = aws_instance.ingress_worker.private_ip
-}
-
-output "egress_worker_ip" {
-  value = aws_instance.egress_worker.private_ip
-}
-
 output "vault_ip" {
   value = aws_instance.vault.private_ip
 }
@@ -51,8 +40,8 @@ output "okta_client" {
   }
 }
 
-output "worker_egress_security_group_id" {
-  value = module.egress_worker_sg.security_group_id
+output "bastion_security_group_id" {
+  value = module.bastion_sg.security_group_id
 }
 
 output "vault_security_group_id" {
@@ -61,6 +50,10 @@ output "vault_security_group_id" {
 
 output "worker_ingress_security_group_id" {
   value = module.ingress_worker_sg.security_group_id
+}
+
+output "worker_egress_security_group_id" {
+  value = module.egress_worker_sg.security_group_id
 }
 
 output "private_subnets" {
@@ -81,4 +74,8 @@ output "vpc_id" {
 
 output "aws_keypair_keyname" {
   value = aws_key_pair.this.key_name
+}
+
+output "controller_internal_dns" {
+  value = aws_lb.controller_internal_lb.dns_name
 }

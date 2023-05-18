@@ -39,3 +39,9 @@ variable "static_creds_username" {
 variable "static_creds_password" {
   type = string
 }
+variable "boundary_admin_username" {
+  type = string
+}
+variable "boundary_admin_password" {
+  type = string
+}
