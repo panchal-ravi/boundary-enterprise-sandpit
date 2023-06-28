@@ -51,6 +51,9 @@ resource "random_id" "recovery_kms" {
 resource "random_id" "worker_auth_kms" {
   byte_length = 32
 }
+resource "random_id" "bsr_kms" {
+  byte_length = 32
+}
 
 resource "aws_instance" "controller" {
   count           = var.controller_count
@@ -81,6 +84,7 @@ resource "aws_instance" "controller" {
       controller_lb_dns = aws_lb.controller_internal_lb.dns_name
       root_kms          = random_id.root_kms.b64_std,
       worker_auth_kms   = random_id.worker_auth_kms.b64_std,
+      bsr_kms           = random_id.bsr_kms.b64_std,
     })
     destination = "/tmp/boundary-controller.hcl"
   }
@@ -189,17 +193,6 @@ resource "aws_instance" "controller" {
 
 resource "null_resource" "copy" {
 
-  /* provisioner "local-exec" {
-    command = <<-EOT
-      ssh -o StrictHostKeyChecking=no -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip} "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /home/ubuntu/ssh_key ubuntu@${aws_instance.controller[0].private_ip}:/home/ubuntu/boundary_password /home/ubuntu/boundary_password"
-      ssh -o StrictHostKeyChecking=no -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip} "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /home/ubuntu/ssh_key ubuntu@${aws_instance.controller[0].private_ip}:/home/ubuntu/global_auth_method_id /home/ubuntu/global_auth_method_id"
-      ssh -o StrictHostKeyChecking=no -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip} "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /home/ubuntu/ssh_key ubuntu@${aws_instance.controller[0].private_ip}:/etc/boundary.d/boundary-recovery-kms.hcl /home/ubuntu/kms_recovery.hcl"
-      scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip}:/home/ubuntu/boundary_password ./generated/
-      scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip}:/home/ubuntu/global_auth_method_id ./generated/
-      scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip}:/home/ubuntu/kms_recovery.hcl ./generated/
-      EOT
-  } */
-
   provisioner "local-exec" {
     command = <<-EOT
       ssh -o StrictHostKeyChecking=no -i ${path.root}/generated/${local.key_name} ubuntu@${aws_instance.bastion.public_ip} "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /home/ubuntu/ssh_key ubuntu@${aws_instance.controller[0].private_ip}:/etc/boundary.d/boundary-recovery-kms.hcl /home/ubuntu/kms_recovery.hcl"
@@ -234,11 +227,6 @@ resource "null_resource" "delete" {
       rm ${path.root}/generated/k8s_ca.crt || true
       rm ${path.root}/kubeconfig || true
       EOD
-      
-      /* 
-      rm ${path.root}/generated/vault_credstore_id
-      rm ${path.root}/generated/boundary_password || true
-      rm ${path.root}/generated/global_auth_method_id || true 
-      */
   }
+  depends_on = [module.vpc]
 }

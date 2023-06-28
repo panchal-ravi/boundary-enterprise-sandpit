@@ -3,6 +3,7 @@ files/k8s
 files/boundary/boundary-deployment.yaml
 files/boundary/license.hclic
 modules/infra/aws/cluster/tmp/*
+scripts/createbucket.sh
 scripts/test*
 json
 generated/*

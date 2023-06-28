@@ -18,6 +18,7 @@ worker {
     public_addr = "${public_ip}"
     initial_upstreams = ["${controller_lb_dns}:9201"]
     auth_storage_path = "/etc/boundary.d/auth_storage"
+    recording_storage_path="/etc/boundary.d/session_storage"
     controller_generated_activation_token = "${activation_token}"
     tags {
         type = ["ingress", "upstream", "worker1"]
@@ -46,9 +47,10 @@ events {
       path = "/var/log/boundary"
       file_name = "ingress-worker.log"
     }
+
     audit_config {
       audit_filter_overrides {
-        sensitive = "redact"
+        // sensitive = "redact"
         secret    = "redact"
       }
     }

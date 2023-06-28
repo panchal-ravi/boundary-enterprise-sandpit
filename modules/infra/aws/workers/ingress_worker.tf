@@ -58,6 +58,7 @@ resource "aws_instance" "ingress_worker" {
     inline = [
       "sudo base64 -d /tmp/install_base64.sh > /tmp/install.sh",
       "sudo mkdir -p /etc/boundary.d/auth_storage",
+      "sudo mkdir -p /etc/boundary.d/session_storage",
       "sudo touch /etc/boundary.d/boundary.env",
       "sudo touch /etc/boundary.d/boundary-recovery-kms.hcl",
       "sudo chown -R boundary:boundary /etc/boundary.d",

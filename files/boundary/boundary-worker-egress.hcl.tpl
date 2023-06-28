@@ -19,6 +19,7 @@ worker {
   public_addr = "${private_ip}"
   initial_upstreams = ["${upstream_worker_ip}:9202"]
   auth_storage_path = "/etc/boundary.d/auth_storage/"
+  recording_storage_path="/etc/boundary.d/session_storage"
   controller_generated_activation_token = "${activation_token}"
   tags {
     type = ["egress", "worker2", "downstream"]
@@ -49,7 +50,7 @@ events {
     }
     audit_config {
       audit_filter_overrides {
-        sensitive = "redact"
+        // sensitive = "redact"
         secret    = "redact"
       }
     }

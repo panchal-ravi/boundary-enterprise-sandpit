@@ -46,9 +46,9 @@ resource "kubernetes_stateful_set_v1" "statefulset" {
 
       spec {
         container {
-          image   = "hashicorp/boundary-worker-hcp:0.12.2-hcp"
+          image   = "hashicorp/boundary-enterprise:0.13-ent"
           name    = "boundary-worker"
-          command = ["boundary-worker", "server", "-config", "/etc/boundary/boundary-worker.hcl"]
+          command = ["boundary", "server", "-config", "/etc/boundary/boundary-worker.hcl"]
           port {
             container_port = 9202
           }

@@ -39,9 +39,9 @@ build {
       "sudo apt install net-tools -y",
       "sudo apt install postgresql-client -y",
       "sudo apt install jq -y",
-      "curl -k -O \"https://releases.hashicorp.com/boundary-worker/${var.boundary_version}/boundary-worker_${var.boundary_version}_linux_amd64.zip\"",
-      "unzip boundary-worker_${var.boundary_version}_linux_amd64.zip",
-      "sudo mv boundary-worker /usr/local/bin/boundary"
+      "curl -k -O \"https://releases.hashicorp.com/boundary/${var.boundary_version}/boundary_${var.boundary_version}_linux_amd64.zip\"",
+      "unzip boundary_${var.boundary_version}_linux_amd64.zip",
+      "sudo mv boundary /usr/local/bin/boundary"
     ]
   }
 

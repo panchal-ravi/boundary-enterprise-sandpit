@@ -126,6 +126,12 @@ kms "aead"{
   key_id = "global_worker-auth"
 }
 
+kms "aead" {
+  purpose = "bsr"
+  aead_type = "aes-gcm"
+  key = "${bsr_kms}"
+  key_id = "bsr"
+}
 
 # Root KMS Key (managed by AWS KMS in this example)
 # Keep in mind that sensitive values are provided via ENV VARS
