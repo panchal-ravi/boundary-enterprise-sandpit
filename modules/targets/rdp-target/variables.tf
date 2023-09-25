@@ -26,6 +26,12 @@ variable "auth0_managed_group_analyst_id" {
 variable "auth0_managed_group_admin_id" {
   type = string
 }
+variable "azure_managed_group_analyst_id" {
+  type = string
+}
+variable "azure_managed_group_admin_id" {
+  type = string
+}
 variable "okta_managed_group_analyst_id" {
   type = string
 }

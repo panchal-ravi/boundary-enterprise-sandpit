@@ -16,7 +16,7 @@ output "boundary_ips" {
 }
 
 output "boundary_cluster_url" {
-  value = module.boundary-cluster.boundary_cluster_url
+  value = "https://${module.boundary-cluster.boundary_cluster_url}"
 }
 
 output "kibana_url" {

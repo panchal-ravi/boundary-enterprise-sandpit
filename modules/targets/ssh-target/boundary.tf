@@ -1,3 +1,11 @@
+locals {
+  my_email = split("/", data.aws_caller_identity.current.arn)[2]
+}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_region" "current" {}
+
 resource "boundary_host_catalog_static" "linux_servers" {
   name        = "linux_servers"
   description = "Linux servers"
@@ -52,7 +60,7 @@ resource "boundary_role" "linux_admin" {
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
-  principal_ids = [var.auth0_managed_group_admin_id, var.okta_managed_group_admin_id]
+  principal_ids = [var.auth0_managed_group_admin_id, var.okta_managed_group_admin_id, var.azure_managed_group_admin_id]
 }
 
 
@@ -74,5 +82,27 @@ resource "boundary_target" "linux_admin" {
     /* boundary_credential_library_vault.vault-ssh-key.id */
     boundary_credential_library_vault_ssh_certificate.vault-ssh-client-cert.id
   ]
+  enable_session_recording = true
+  storage_bucket_id        = boundary_storage_bucket.aws.id
 }
 
+resource "aws_iam_access_key" "boundary" {
+  user = "demo-${local.my_email}-boundary"
+}
+
+resource "boundary_storage_bucket" "aws" {
+  name            = "global-session-recording-storage"
+  description     = "Storage bucket to store session recording"
+  scope_id        = var.org_id
+  plugin_name     = "aws"
+  bucket_name     = "${var.deployment_id}-session-storage-bucket"
+  attributes_json = jsonencode({ "region" = data.aws_region.current.name, "disable_credential_rotation" = true })
+
+  # recommended to pass in aws secrets using a file() or using environment variables
+  # the secrets below must be generated in aws by creating a aws iam user with programmatic access
+  secrets_json = jsonencode({
+    "access_key_id"     = aws_iam_access_key.boundary.id,
+    "secret_access_key" = aws_iam_access_key.boundary.secret
+  })
+  worker_filter = "\"egress\" in \"/tags/type\""
+}

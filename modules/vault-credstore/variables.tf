@@ -1,5 +1,5 @@
-variable "project_id" {
-  type = string
+
+variable "projects" {
 }
 
 variable "vault_ip" {
@@ -10,10 +10,16 @@ variable "bastion_ip" {
   type = string
 }
 
-/* variable "boundary_cluster_url" {
+/* 
+variable "project_id" {
+  type = string
+}
+
+variable "boundary_cluster_url" {
   type = string
 }
 
 variable "boundary_password" {
   type = string
-} */
+} 
+*/

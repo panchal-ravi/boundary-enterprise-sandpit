@@ -58,6 +58,15 @@ resource "boundary_target" "eks_postgres_admin" {
   ]
 }
 
+resource "boundary_credential_json" "eks_ca_crt" {
+  name                = "eks_ca_crt"
+  description         = "EKS CA Certificate"
+  credential_store_id = var.boundary_static_credstore_id
+  object = jsonencode({
+    "eks_ca_crt" = data.aws_eks_cluster.cluster.certificate_authority.0.data
+  })
+}
+
 resource "boundary_target" "eks_readonly" {
   type                     = "tcp"
   name                     = "eks_readonly"
@@ -71,7 +80,8 @@ resource "boundary_target" "eks_readonly" {
   ]
 
   brokered_credential_source_ids = [
-    boundary_credential_library_vault.eks_token_readonly.id
+    boundary_credential_library_vault.eks_token_readonly.id,
+    boundary_credential_json.eks_ca_crt.id
   ]
 }
 
@@ -98,7 +108,7 @@ resource "boundary_role" "db_admin" {
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
-  principal_ids = [var.auth0_managed_group_admin_id, var.okta_managed_group_admin_id]
+  principal_ids = [var.auth0_managed_group_admin_id, var.okta_managed_group_admin_id, var.azure_managed_group_admin_id]
 }
 
 resource "boundary_role" "eks_readonly" {
@@ -111,5 +121,5 @@ resource "boundary_role" "eks_readonly" {
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
-  principal_ids = [var.auth0_managed_group_analyst_id, var.okta_managed_group_analyst_id]
+  principal_ids = [var.auth0_managed_group_analyst_id, var.okta_managed_group_analyst_id, var.azure_managed_group_analyst_id]
 }

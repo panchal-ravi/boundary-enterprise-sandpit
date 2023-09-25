@@ -79,3 +79,16 @@ output "aws_keypair_keyname" {
 output "controller_internal_dns" {
   value = aws_lb.controller_internal_lb.dns_name
 }
+
+output "azure_client" {
+  value = {
+    client_id = azuread_application.client_app.application_id,
+    client_secret = azuread_application_password.client_app.value
+  }
+}
+output "az_ad_group_admin_id" {
+  value = azuread_group.admin.object_id
+}
+output "az_ad_group_analyst_id" {
+  value = azuread_group.analyst.object_id
+}

@@ -26,6 +26,9 @@ variable "auth0_managed_group_admin_id" {
 variable "okta_managed_group_admin_id" {
   type = string
 }
+variable "azure_managed_group_admin_id" {
+  type = string
+}
 variable "project_id" {
   type = string
 }

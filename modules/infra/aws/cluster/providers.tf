@@ -8,6 +8,10 @@ terraform {
       source  = "okta/okta"
       version = "3.40.0"
     }
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = "~> 2.15.0"
+    }
   }
 }
 
@@ -22,4 +26,10 @@ provider "okta" {
   org_name  = var.okta_org_name
   base_url  = var.okta_base_url
   api_token = var.okta_api_token
+}
+
+provider "azuread" {
+  tenant_id     = var.az_ad_tenant_id
+  client_id     = var.az_ad_client_id
+  client_secret = var.az_ad_client_secret
 }

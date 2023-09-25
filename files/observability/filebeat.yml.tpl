@@ -156,6 +156,7 @@ output.elasticsearch:
   username: "elastic"
   password: "${elastic_password}"
   ssl.verification_mode: "none"
+  allow_older_versions: true
 
 # ------------------------------ Logstash Output -------------------------------
 #output.logstash:

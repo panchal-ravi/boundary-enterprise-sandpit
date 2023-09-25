@@ -47,9 +47,8 @@ resource "boundary_role" "db_analyst" {
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
-  principal_ids = [var.auth0_managed_group_analyst_id, var.okta_managed_group_analyst_id]
+  principal_ids = [var.auth0_managed_group_analyst_id, var.okta_managed_group_analyst_id, var.azure_managed_group_analyst_id]
 }
-
 
 resource "boundary_role" "db_admin" {
   name           = "db_admin"
@@ -61,7 +60,7 @@ resource "boundary_role" "db_admin" {
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
-  principal_ids = [var.auth0_managed_group_admin_id, var.okta_managed_group_admin_id]
+  principal_ids = [var.auth0_managed_group_admin_id, var.okta_managed_group_admin_id, var.azure_managed_group_admin_id]
 }
 
 

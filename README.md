@@ -72,3 +72,5 @@ cd <cloned-directory>
 
 ./scripts/destroy.sh
 ```
+
+

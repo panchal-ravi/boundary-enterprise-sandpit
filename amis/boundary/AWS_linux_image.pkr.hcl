@@ -39,6 +39,10 @@ build {
       "sudo apt install net-tools -y",
       "sudo apt install postgresql-client -y",
       "sudo apt install jq -y",
+      "sudo apt install zsh -y",
+      "sh -c \"$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\"",
+      "echo \"plugins=(git zsh-autosuggestions fast-syntax-highlighting)\" >> ~/.zshrc",
+      "sudo usermod -s /usr/bin/zsh ubuntu",
       "curl -k -O \"https://releases.hashicorp.com/boundary/${var.boundary_version}/boundary_${var.boundary_version}_linux_amd64.zip\"",
       "unzip boundary_${var.boundary_version}_linux_amd64.zip",
       "sudo mv boundary /usr/local/bin/boundary"

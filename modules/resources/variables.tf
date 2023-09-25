@@ -45,3 +45,21 @@ variable "boundary_admin_username" {
 variable "boundary_admin_password" {
   type = string
 }
+
+variable "az_ad_tenant_id" {
+  type = string
+}
+
+variable "az_ad_client_id" {
+  type = string
+}
+
+variable "az_ad_client_secret" {
+  type = string
+}
+variable "az_ad_group_admin_id" {
+  type = string
+}
+variable "az_ad_group_analyst_id" {
+  type = string
+}

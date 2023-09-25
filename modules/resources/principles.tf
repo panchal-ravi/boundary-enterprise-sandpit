@@ -26,6 +26,20 @@ resource "boundary_managed_group" "okta_db_admin" {
   filter         = "\"admin\" in \"/userinfo/groups\""
 }
 
+resource "boundary_managed_group" "azure_db_admin" {
+  name           = "azure_db_admin"
+  description    = "DB Admin managed group"
+  auth_method_id = boundary_auth_method_oidc.azure_oidc.id
+  filter         = "\"${var.az_ad_group_admin_id}\" in \"/token/groups\""
+}
+
+resource "boundary_managed_group" "azure_db_analyst" {
+  name           = "azure_db_analyst"
+  description    = "DB Analyst managed group"
+  auth_method_id = boundary_auth_method_oidc.azure_oidc.id
+  filter         = "\"${var.az_ad_group_analyst_id}\" in \"/token/groups\""
+}
+
 resource "boundary_account_password" "admin" {
   auth_method_id = boundary_auth_method_password.password.id
   type           = "password"

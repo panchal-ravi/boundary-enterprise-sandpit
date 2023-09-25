@@ -61,3 +61,13 @@ variable "okta_org_name" {
 variable "user_password" {
   type = string
 }
+variable "az_ad_tenant_id" {
+  type = string
+}
+variable "az_ad_client_id" {
+  type = string
+}
+
+variable "az_ad_client_secret" {
+  type = string
+}

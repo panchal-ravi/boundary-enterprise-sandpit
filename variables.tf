@@ -108,6 +108,18 @@ variable "boundary_admin_password" {
   type = string
 }
 
+variable "az_ad_tenant_id" {
+  type = string
+}
+
+variable "az_ad_client_id" {
+  type = string
+}
+
+variable "az_ad_client_secret" {
+  type = string
+}
+
 /* 
 variable "rdp_username" {
   type = string
