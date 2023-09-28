@@ -100,7 +100,7 @@ events {
     }
     audit_config {
       audit_filter_overrides {
-        // sensitive = "redact"
+        sensitive = "" // disable applying filter to sensitive fields
         secret    = "redact"
       }
     }
