@@ -35,7 +35,6 @@ resource "aws_s3_bucket" "session_storage" {
 }
 
 /* 
-
 resource "aws_s3_bucket_public_access_block" "session_storage" {
   bucket = aws_s3_bucket.session_storage.id
 
@@ -91,4 +90,36 @@ resource "aws_iam_policy" "session_storage_policy" {
       },
     ]
   })
+}
+
+resource "aws_iam_role" "session_storage_role" {
+  name = "${var.deployment_id}-session-storage-role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+  inline_policy {
+    name   = "${var.deployment_id}-session-storage-policy"
+    policy = aws_iam_policy.session_storage_policy.policy
+  }
+
+  tags = {
+    /* tag-key = "tag-value" */
+  }
+}
+resource "aws_iam_instance_profile" "worker_instance_profile" {
+  name = "${var.deployment_id}-worker-profile"
+  role = aws_iam_role.session_storage_role.name
 }

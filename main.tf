@@ -50,6 +50,7 @@ module "boundary-workers" {
   worker_ingress_security_group_id = module.boundary-cluster.worker_ingress_security_group_id
   worker_egress_security_group_id  = module.boundary-cluster.worker_egress_security_group_id
   boundary_cluster_url             = module.boundary-cluster.boundary_cluster_url
+  worker_instance_profile          = module.boundary-cluster.worker_instance_profile
 }
 
 module "boundary-resources" {
@@ -100,6 +101,7 @@ module "ssh-target" {
   bastion_ip                       = module.boundary-workers.ingress_worker_ip
   worker_ingress_security_group_id = module.boundary-cluster.worker_ingress_security_group_id
   worker_egress_security_group_id  = module.boundary-cluster.worker_egress_security_group_id
+  session_storage_role_arn         = module.boundary-cluster.session_storage_role_arn
   owner                            = var.owner
 }
 

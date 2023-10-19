@@ -41,3 +41,6 @@ variable "worker_egress_security_group_id" {
   type = string
 }
 
+variable "worker_instance_profile" {
+  type = string
+}

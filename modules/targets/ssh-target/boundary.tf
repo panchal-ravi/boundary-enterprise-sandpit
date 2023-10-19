@@ -96,13 +96,17 @@ resource "boundary_storage_bucket" "aws" {
   scope_id        = var.org_id
   plugin_name     = "aws"
   bucket_name     = "${var.deployment_id}-session-storage-bucket"
-  attributes_json = jsonencode({ "region" = data.aws_region.current.name, "disable_credential_rotation" = true })
+  attributes_json = jsonencode({ "region" = data.aws_region.current.name, "disable_credential_rotation" = true, "role_arn" = var.session_storage_role_arn })
 
   # recommended to pass in aws secrets using a file() or using environment variables
-  # the secrets below must be generated in aws by creating a aws iam user with programmatic access
-  secrets_json = jsonencode({
+  # the secrets below must be generated in aws by creating an aws iam user with programmatic access
+
+  /* secrets_json = jsonencode({
     "access_key_id"     = aws_iam_access_key.boundary.id,
     "secret_access_key" = aws_iam_access_key.boundary.secret
-  })
+  }) */
+  secrets_json = jsonencode({})
+
+
   worker_filter = "\"egress\" in \"/tags/type\""
 }

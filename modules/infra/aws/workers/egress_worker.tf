@@ -1,9 +1,10 @@
 resource "aws_instance" "egress_worker" {
-  ami             = data.aws_ami.worker_image.id
-  instance_type   = var.instance_type
-  key_name        = var.aws_keypair_key_name
-  subnet_id       = element(var.private_subnets, 1)
-  security_groups = [var.worker_egress_security_group_id]
+  ami                  = data.aws_ami.worker_image.id
+  instance_type        = var.instance_type
+  key_name             = var.aws_keypair_key_name
+  subnet_id            = element(var.private_subnets, 1)
+  security_groups      = [var.worker_egress_security_group_id]
+  iam_instance_profile = var.worker_instance_profile
 
   lifecycle {
     ignore_changes = all
@@ -74,14 +75,14 @@ resource "aws_instance" "egress_worker" {
 
 
   connection {
-    bastion_host        = var.bastion_ip 
+    bastion_host        = var.bastion_ip
     bastion_user        = "ubuntu"
     agent               = false
-    bastion_private_key = file("${path.root}/generated/ssh_key") 
+    bastion_private_key = file("${path.root}/generated/ssh_key")
 
     host        = self.private_ip
     user        = "ubuntu"
-    private_key = file("${path.root}/generated/ssh_key") 
+    private_key = file("${path.root}/generated/ssh_key")
   }
 
 }
@@ -90,5 +91,5 @@ resource "boundary_worker" "egress_worker" {
   description                 = "egress worker"
   name                        = "egress-worker"
   scope_id                    = "global"
-  worker_generated_auth_token = "" 
+  worker_generated_auth_token = ""
 }

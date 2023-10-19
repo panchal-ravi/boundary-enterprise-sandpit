@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# mkdir ~/.credentials
 nohup boundary connect -target-name eks_readonly  -format=json | tee ~/.credentials/boundary-kube.json 1>/dev/null &
 #exit 0
 sleep 2

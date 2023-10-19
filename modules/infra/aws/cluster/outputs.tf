@@ -92,3 +92,11 @@ output "az_ad_group_admin_id" {
 output "az_ad_group_analyst_id" {
   value = azuread_group.analyst.object_id
 }
+
+output "worker_instance_profile" {
+  value = aws_iam_instance_profile.worker_instance_profile.name
+}
+
+output "session_storage_role_arn" {
+  value = aws_iam_role.session_storage_role.arn
+}

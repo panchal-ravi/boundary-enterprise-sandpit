@@ -12,11 +12,12 @@ resource "random_id" "worker_auth_storage_kms" {
 }
 
 resource "aws_instance" "ingress_worker" {
-  ami             = data.aws_ami.worker_image.id
-  instance_type   = var.instance_type
-  key_name        = var.aws_keypair_key_name
-  subnet_id       = element(var.public_subnets, 1)
-  security_groups = [var.worker_ingress_security_group_id]
+  ami                  = data.aws_ami.worker_image.id
+  instance_type        = var.instance_type
+  key_name             = var.aws_keypair_key_name
+  subnet_id            = element(var.public_subnets, 1)
+  security_groups      = [var.worker_ingress_security_group_id]
+  iam_instance_profile = var.worker_instance_profile
 
   lifecycle {
     ignore_changes = all
@@ -45,7 +46,7 @@ resource "aws_instance" "ingress_worker" {
   }
 
   provisioner "file" {
-    content     = file("${path.root}/generated/ssh_key") 
+    content     = file("${path.root}/generated/ssh_key")
     destination = "/home/ubuntu/ssh_key"
   }
 
@@ -92,7 +93,7 @@ resource "aws_instance" "ingress_worker" {
     host        = self.public_ip
     user        = "ubuntu"
     agent       = false
-    private_key = file("${path.root}/generated/ssh_key") 
+    private_key = file("${path.root}/generated/ssh_key")
   }
 
 }

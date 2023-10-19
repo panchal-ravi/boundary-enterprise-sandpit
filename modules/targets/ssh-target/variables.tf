@@ -50,3 +50,6 @@ variable "worker_ingress_security_group_id" {
 variable "bastion_ip" {
   type = string
 }
+variable "session_storage_role_arn" {
+  type = string
+}
