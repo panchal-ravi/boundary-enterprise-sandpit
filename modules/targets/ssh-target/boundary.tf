@@ -58,7 +58,10 @@ resource "boundary_role" "linux_admin" {
   grant_strings = [
     "id=${boundary_target.linux_admin.id};actions=read,authorize-session",
     "id=*;type=target;actions=list,no-op",
-    "id=*;type=auth-token;actions=list,read:self,delete:self"
+    "id=*;type=auth-token;actions=list,read:self,delete:self",
+    "id=*;type=host;actions=list,read",
+    "id=*;type=host-set;actions=list,read",
+    "id=*;type=host-catalog;actions=list,read"
   ]
   principal_ids = [var.auth0_managed_group_admin_id, var.okta_managed_group_admin_id, var.azure_managed_group_admin_id]
 }
