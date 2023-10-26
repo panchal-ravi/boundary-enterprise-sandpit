@@ -60,7 +60,10 @@ resource "boundary_role" "linux_admin" {
     "id=${boundary_host_static.linux_servers.id};actions=read",
     "id=${boundary_host_set_static.linux_servers.id};actions=read",
     "id=*;type=target;actions=list,no-op",
-    "id=*;type=auth-token;actions=list,read:self,delete:self"
+    "id=*;type=auth-token;actions=list,read:self,delete:self",
+    "id=*;type=host;actions=list,read",
+    "id=*;type=host-set;actions=list,read",
+    "id=*;type=host-catalog;actions=list,read"
   ]
   principal_ids = [var.auth0_managed_group_admin_id, var.okta_managed_group_admin_id, var.azure_managed_group_admin_id]
 }
