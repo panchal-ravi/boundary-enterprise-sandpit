@@ -1,3 +1,4 @@
+/*
 locals {
   my_email = split("/", data.aws_caller_identity.current.arn)[2]
 }
@@ -6,7 +7,7 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
-
+ 
 data "aws_iam_policy" "demo_user_permissions_boundary" {
   name = "DemoUser"
 }
@@ -17,24 +18,18 @@ resource "aws_iam_user" "boundary_user" {
   force_destroy        = true
 }
 
-/* 
+
 resource "aws_iam_user_policy_attachment" "demo_permissions" {
   user       = aws_iam_user.boundary_user.name
   policy_arn = data.aws_iam_policy.demo_user_permissions_boundary.arn
 } 
-*/
+
 
 resource "aws_iam_user_policy_attachment" "session_storage" {
   user       = aws_iam_user.boundary_user.name
   policy_arn = aws_iam_policy.session_storage_policy.arn
 }
 
-resource "aws_s3_bucket" "session_storage" {
-  bucket        = "${var.deployment_id}-session-storage-bucket"
-  force_destroy = true
-}
-
-/* 
 resource "aws_s3_bucket_public_access_block" "session_storage" {
   bucket = aws_s3_bucket.session_storage.id
 
@@ -53,6 +48,16 @@ resource "aws_s3_bucket_acl" "session_storage" {
   acl    = "public-read"
 } 
 */
+
+resource "aws_iam_instance_profile" "worker_instance_profile" {
+  name = "${var.deployment_id}-worker-profile"
+  role = aws_iam_role.session_storage_role.name
+}
+
+resource "aws_s3_bucket" "session_storage" {
+  bucket        = "${var.deployment_id}-session-storage-bucket"
+  force_destroy = true
+}
 
 resource "aws_iam_policy" "session_storage_policy" {
   name        = "${var.deployment_id}-session-storage-policy"
@@ -76,6 +81,7 @@ resource "aws_iam_policy" "session_storage_policy" {
           "${aws_s3_bucket.session_storage.arn}/*"
         ]
       },
+      /*
       {
         "Sid" : "UserPermissions",
         "Effect" : "Allow",
@@ -88,6 +94,7 @@ resource "aws_iam_policy" "session_storage_policy" {
           "${aws_iam_user.boundary_user.arn}"
         ]
       },
+      */
     ]
   })
 }
@@ -119,7 +126,4 @@ EOF
     /* tag-key = "tag-value" */
   }
 }
-resource "aws_iam_instance_profile" "worker_instance_profile" {
-  name = "${var.deployment_id}-worker-profile"
-  role = aws_iam_role.session_storage_role.name
-}
+

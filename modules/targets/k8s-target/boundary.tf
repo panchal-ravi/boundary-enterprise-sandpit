@@ -105,6 +105,8 @@ resource "boundary_role" "db_admin" {
   grant_scope_id = var.project_id
   grant_strings = [
     "id=${boundary_target.eks_postgres_admin.id};actions=read,authorize-session",
+    "id=${boundary_host_static.eks_db_servers.id};actions=read",
+    "id=${boundary_host_set_static.eks_db_servers.id};actions=read",
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
@@ -118,6 +120,8 @@ resource "boundary_role" "eks_readonly" {
   grant_scope_id = var.project_id
   grant_strings = [
     "id=${boundary_target.eks_readonly.id};actions=read,authorize-session",
+    "id=${boundary_host_static.eks_cluster.id};actions=read",
+    "id=${boundary_host_set_static.eks_cluster.id};actions=read",
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]

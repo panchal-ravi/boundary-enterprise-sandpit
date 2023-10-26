@@ -25,6 +25,8 @@ resource "boundary_role" "windows_admin" {
   grant_scope_id = var.project_id
   grant_strings = [
     "id=${boundary_target.windows_admin.id};actions=read,authorize-session",
+    "id=${boundary_host_static.windows_servers.id};actions=read",
+    "id=${boundary_host_set_static.windows_servers.id};actions=read",
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
@@ -38,6 +40,8 @@ resource "boundary_role" "windows_analyst" {
   grant_scope_id = var.project_id
   grant_strings = [
     "id=${boundary_target.windows_analyst.id};actions=read,authorize-session",
+    "id=${boundary_host_static.windows_servers.id};actions=read",
+    "id=${boundary_host_set_static.windows_servers.id};actions=read",
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]

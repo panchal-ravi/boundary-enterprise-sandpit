@@ -57,6 +57,8 @@ resource "boundary_role" "linux_admin" {
   grant_scope_id = var.project_id
   grant_strings = [
     "id=${boundary_target.linux_admin.id};actions=read,authorize-session",
+    "id=${boundary_host_static.linux_servers.id};actions=read",
+    "id=${boundary_host_set_static.linux_servers.id};actions=read",
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
@@ -86,9 +88,9 @@ resource "boundary_target" "linux_admin" {
   storage_bucket_id        = boundary_storage_bucket.aws.id
 }
 
-resource "aws_iam_access_key" "boundary" {
+/* resource "aws_iam_access_key" "boundary" {
   user = "demo-${local.my_email}-boundary"
-}
+} */
 
 resource "boundary_storage_bucket" "aws" {
   name            = "global-session-recording-storage"

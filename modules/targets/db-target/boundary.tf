@@ -44,6 +44,8 @@ resource "boundary_role" "db_analyst" {
   grant_scope_id = var.project_id
   grant_strings = [
     "id=${boundary_target.postgres_analyst.id};actions=read,authorize-session",
+    "id=${boundary_host_static.db_servers.id};actions=read",
+    "id=${boundary_host_set_static.db_servers.id};actions=read",
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
@@ -57,6 +59,8 @@ resource "boundary_role" "db_admin" {
   grant_scope_id = var.project_id
   grant_strings = [
     "id=${boundary_target.postgres_admin.id};actions=read,authorize-session",
+    "id=${boundary_host_static.db_servers.id};actions=read",
+    "id=${boundary_host_set_static.db_servers.id};actions=read",
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
