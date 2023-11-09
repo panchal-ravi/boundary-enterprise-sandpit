@@ -8,4 +8,3 @@ resource "boundary_target" "vault_target" {
   address               = var.vault_ip
   ingress_worker_filter = "\"ingress\" in \"/tags/type\""
 }
-

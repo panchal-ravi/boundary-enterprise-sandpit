@@ -11,8 +11,8 @@ data "aws_ami" "windows-2022" {
 resource "aws_instance" "windows" {
   ami                    = data.aws_ami.windows-2022.id //"ami-0b204ba02c86d0218"
   instance_type          = "t3.micro"
-  key_name               = var.aws_keypair_keyname
-  subnet_id              = var.private_subnets[0]
+  key_name               = var.infra_aws.aws_keypair_key_name
+  subnet_id              = var.infra_aws.private_subnets[0]
   vpc_security_group_ids = [module.private-rdp-inbound.security_group_id]
   get_password_data      = true
 

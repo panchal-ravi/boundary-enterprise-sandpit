@@ -3,8 +3,8 @@ module "eks" {
   version                         = "18.26.3"
   cluster_name                    = var.deployment_id
   cluster_version                 = "1.22"
-  vpc_id                          = var.vpc_id
-  subnet_ids                      = [var.private_subnets[0], var.private_subnets[1]]
+  vpc_id                          = var.infra_aws.vpc_id
+  subnet_ids                      = [var.infra_aws.private_subnets[0], var.infra_aws.private_subnets[1]]
   cluster_endpoint_private_access = true
   cluster_service_ipv4_cidr       = "172.20.0.0/18"
 
@@ -17,7 +17,7 @@ module "eks" {
       from_port   = 0
       to_port     = 0
       type        = "egress"
-      cidr_blocks = [var.vpc_cidr]
+      cidr_blocks = [var.infra_aws.vpc_cidr_block]
     }
     ops_private_access_ingress = {
       description = "Ops Private Ingress"
@@ -25,7 +25,7 @@ module "eks" {
       from_port   = 0
       to_port     = 0
       type        = "ingress"
-      cidr_blocks = [var.vpc_cidr]
+      cidr_blocks = [var.infra_aws.vpc_cidr_block]
     }
   }
   eks_managed_node_groups = {
@@ -34,7 +34,7 @@ module "eks" {
       max_size               = 3
       desired_size           = 2
       instance_types         = ["t3.medium"]
-      key_name               = var.aws_keypair_keyname
+      key_name               = var.infra_aws.aws_keypair_key_name
       vpc_security_group_ids = [module.private-ssh.security_group_id]
     }
   }

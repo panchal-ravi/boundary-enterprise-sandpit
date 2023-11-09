@@ -53,8 +53,8 @@ resource "azuread_application" "client_app" {
 
   web {
     /* homepage_url  = "https://app.example.net" */
-    logout_url    = "https://${aws_lb.controller_lb.dns_name}"
-    redirect_uris = ["https://${aws_lb.controller_lb.dns_name}/v1/auth-methods/oidc:authenticate:callback"]
+    logout_url    = "https://${var.boundary_cluster_url}"
+    redirect_uris = ["https://${var.boundary_cluster_url}/v1/auth-methods/oidc:authenticate:callback"]
 
     implicit_grant {
       access_token_issuance_enabled = true

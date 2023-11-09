@@ -14,10 +14,10 @@ resource "random_id" "worker_auth_storage_kms" {
 resource "aws_instance" "ingress_worker" {
   ami                  = data.aws_ami.worker_image.id
   instance_type        = var.instance_type
-  key_name             = var.aws_keypair_key_name
-  subnet_id            = element(var.public_subnets, 1)
-  security_groups      = [var.worker_ingress_security_group_id]
-  iam_instance_profile = var.worker_instance_profile
+  key_name             = var.infra_aws.aws_keypair_key_name
+  subnet_id            = element(var.infra_aws.public_subnets, 1)
+  security_groups      = [var.infra_aws.worker_ingress_security_group_id]
+  iam_instance_profile = var.infra_aws.worker_instance_profile
 
   lifecycle {
     ignore_changes = all
@@ -35,7 +35,7 @@ resource "aws_instance" "ingress_worker" {
 
   provisioner "file" {
     content = templatefile("${path.root}/files/boundary/boundary-worker-ingress.hcl.tpl", {
-      controller_lb_dns       = var.controller_internal_dns,
+      controller_lb_dns       = var.infra_aws.controller_internal_dns,
       private_ip              = self.private_ip,
       public_ip               = self.public_ip,
       public_ip               = self.public_ip,

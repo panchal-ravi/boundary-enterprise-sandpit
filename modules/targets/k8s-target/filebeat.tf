@@ -1,5 +1,5 @@
 resource "null_resource" "filebeat" {
-  count = length(var.controller_ips)
+  count = length(var.infra_aws.controller_ips)
 
 
   provisioner "file" {
@@ -20,12 +20,12 @@ resource "null_resource" "filebeat" {
   }
 
   connection {
-    bastion_host        = var.bastion_ip
+    bastion_host        = var.infra_aws.bastion_ip
     bastion_user        = "ubuntu"
     agent               = false
     bastion_private_key = file("${path.root}/generated/ssh_key")
 
-    host        = var.controller_ips[count.index]
+    host        = var.infra_aws.controller_ips[count.index]
     user        = "ubuntu"
     private_key = file("${path.root}/generated/ssh_key")
   }

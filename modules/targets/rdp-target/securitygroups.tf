@@ -3,12 +3,12 @@ module "private-rdp-inbound" {
 
   name        = "${var.deployment_id}-private-rdp"
   description = "Allow RDP private inbound"
-  vpc_id      = var.vpc_id
+  vpc_id      = var.infra_aws.vpc_id
 
   ingress_with_source_security_group_id = [
     {
       rule                     = "rdp-tcp"
-      source_security_group_id = var.worker_egress_security_group_id
+      source_security_group_id = var.infra_aws.worker_egress_security_group_id
     }
   ]
 

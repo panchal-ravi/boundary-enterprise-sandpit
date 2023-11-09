@@ -5,8 +5,8 @@ resource "kubernetes_config_map" "postgres_config" {
 
   data = {
     "POSTGRES_DB"       = "postgres"
-    "POSTGRES_USER"     = "${var.db_username}"
-    "POSTGRES_PASSWORD" = "${var.db_password}"
+    "POSTGRES_USER"     = "${var.rds_creds.username}"
+    "POSTGRES_PASSWORD" = "${var.rds_creds.password}"
   }
 
 }

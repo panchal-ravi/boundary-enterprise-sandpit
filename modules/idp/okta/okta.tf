@@ -2,8 +2,8 @@ resource "okta_app_oauth" "my_client" {
   label                     = "Boundary OIDC Test App"
   type                      = "web"
   grant_types               = ["authorization_code"]
-  redirect_uris             = ["https://${aws_lb.controller_lb.dns_name}/v1/auth-methods/oidc:authenticate:callback"]
-  post_logout_redirect_uris = ["https://${aws_lb.controller_lb.dns_name}"]
+  redirect_uris             = ["https://${var.boundary_cluster_url}/v1/auth-methods/oidc:authenticate:callback"]
+  post_logout_redirect_uris = ["https://${var.boundary_cluster_url}"]
   response_types            = ["code"]
 
   groups_claim {

@@ -6,8 +6,8 @@ resource "auth0_client" "my_client" {
   name                = var.deployment_id
   description         = "Boundary auth0 client application"
   app_type            = "regular_web"
-  callbacks           = ["https://${aws_lb.controller_lb.dns_name}/v1/auth-methods/oidc:authenticate:callback"]
-  allowed_logout_urls = ["https://${aws_lb.controller_lb.dns_name}"]
+  callbacks           = ["https://${var.boundary_cluster_url}/v1/auth-methods/oidc:authenticate:callback"]
+  allowed_logout_urls = ["https://${var.boundary_cluster_url}"]
   oidc_conformant     = true
 
   jwt_configuration {

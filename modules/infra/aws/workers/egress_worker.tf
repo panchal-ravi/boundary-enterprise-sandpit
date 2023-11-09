@@ -1,10 +1,10 @@
 resource "aws_instance" "egress_worker" {
   ami                  = data.aws_ami.worker_image.id
   instance_type        = var.instance_type
-  key_name             = var.aws_keypair_key_name
-  subnet_id            = element(var.private_subnets, 1)
-  security_groups      = [var.worker_egress_security_group_id]
-  iam_instance_profile = var.worker_instance_profile
+  key_name             = var.infra_aws.aws_keypair_key_name
+  subnet_id            = element(var.infra_aws.private_subnets, 1)
+  security_groups      = [var.infra_aws.worker_egress_security_group_id]
+  iam_instance_profile = var.infra_aws.worker_instance_profile
 
   lifecycle {
     ignore_changes = all
@@ -75,7 +75,7 @@ resource "aws_instance" "egress_worker" {
 
 
   connection {
-    bastion_host        = var.bastion_ip
+    bastion_host        = var.infra_aws.bastion_ip
     bastion_user        = "ubuntu"
     agent               = false
     bastion_private_key = file("${path.root}/generated/ssh_key")

@@ -1,3 +1,4 @@
+
 resource "boundary_credential_store_static" "static_cred_store" {
   for_each    = local.scopes
   name        = "boundary-cred-store"

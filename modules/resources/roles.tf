@@ -1,6 +1,7 @@
 # Allows anonymous (un-authenticated) users to list and authenticate against any
 # auth method, list the global scope, and read and change password on their account ID
 # at the global scope
+
 resource "boundary_role" "global_anon_listing" {
   name     = "global_anon"
   scope_id = boundary_scope.global.id
@@ -12,9 +13,11 @@ resource "boundary_role" "global_anon_listing" {
   principal_ids = ["u_anon"]
 }
 
+
 # Allows anonymous (un-authenticated) users to list and authenticate against any
 # auth method, list the global scope, and read and change password on their account ID
 # at the org level scope
+
 
 resource "boundary_role" "global_admin" {
   scope_id      = boundary_scope.global.id
@@ -51,6 +54,8 @@ resource "boundary_role" "org_anon_listing" {
   principal_ids = ["u_anon"]
 }
 
+/*
+
 resource "boundary_role" "default_org" {
   for_each       = local.scopes
   name           = "default_org_${each.key}"
@@ -61,11 +66,10 @@ resource "boundary_role" "default_org" {
     "id={{.User.Id}};actions=read",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
-  principal_ids = local.principal_ids[each.key]
-  /* principal_ids = [boundary_managed_group.auth0_db_analyst.id, boundary_managed_group.auth0_db_admin.id,
-    boundary_managed_group.okta_db_analyst.id, boundary_managed_group.okta_db_admin.id
-  ] */
+  // principal_ids = local.principal_ids[each.key]
+  principal_ids = [boundary_managed_group.db_analyst.id, boundary_managed_group.db_admin.id]
 }
+
 
 resource "boundary_role" "default_project" {
   for_each       = local.scopes
@@ -76,8 +80,7 @@ resource "boundary_role" "default_project" {
     "id=*;type=session;actions=list,no-op",
     "id=*;type=session;actions=read:self,cancel:self",
   ]
-  principal_ids = local.principal_ids[each.key]
-  /* principal_ids = [boundary_managed_group.auth0_db_analyst.id, boundary_managed_group.auth0_db_admin.id,
-    boundary_managed_group.okta_db_analyst.id, boundary_managed_group.okta_db_admin.id
-  ] */
+  // principal_ids = local.principal_ids[each.key]
+  principal_ids = [boundary_managed_group.db_analyst.id, boundary_managed_group.db_admin.id]
 }
+*/

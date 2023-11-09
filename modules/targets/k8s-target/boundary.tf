@@ -2,14 +2,14 @@
 resource "boundary_host_catalog_static" "eks_db_servers" {
   name        = "eks_db_servers"
   description = "EKS DB servers"
-  scope_id    = var.project_id
+  scope_id    = var.boundary_resources.project_id
 }
 
 # EKS cluster
 resource "boundary_host_catalog_static" "eks_cluster" {
   name        = "eks_cluster"
   description = "EKS Cluster"
-  scope_id    = var.project_id
+  scope_id    = var.boundary_resources.project_id
 }
 
 resource "boundary_host_static" "eks_db_servers" {
@@ -45,7 +45,7 @@ resource "boundary_target" "eks_postgres_admin" {
   type                     = "tcp"
   name                     = "eks_postgres_admin"
   description              = "EKS Postgres DB target for Admin"
-  scope_id                 = var.project_id
+  scope_id                 = var.boundary_resources.project_id
   session_connection_limit = -1
   default_port             = 5432
   ingress_worker_filter    = "\"eks\" in \"/tags/type\""
@@ -54,14 +54,14 @@ resource "boundary_target" "eks_postgres_admin" {
   ]
 
   brokered_credential_source_ids = [
-    var.static_db_creds_id
+    var.boundary_resources.static_db_creds_id
   ]
 }
 
 resource "boundary_credential_json" "eks_ca_crt" {
   name                = "eks_ca_crt"
   description         = "EKS CA Certificate"
-  credential_store_id = var.boundary_static_credstore_id
+  credential_store_id = var.boundary_resources.static_credstore_id
   object = jsonencode({
     "eks_ca_crt" = data.aws_eks_cluster.cluster.certificate_authority.0.data
   })
@@ -71,7 +71,7 @@ resource "boundary_target" "eks_readonly" {
   type                     = "tcp"
   name                     = "eks_readonly"
   description              = "EKS Readonly target for Developers"
-  scope_id                 = var.project_id
+  scope_id                 = var.boundary_resources.project_id
   session_connection_limit = -1
   default_port             = 443
   ingress_worker_filter    = "\"ingress\" in \"/tags/type\""
@@ -101,8 +101,8 @@ EOT
 resource "boundary_role" "db_admin" {
   name           = "eks_db_admin"
   description    = "Access to EKS DB for dba role"
-  scope_id       = var.org_id
-  grant_scope_id = var.project_id
+  scope_id       = var.boundary_resources.org_id
+  grant_scope_id = var.boundary_resources.project_id
   grant_strings = [
     "id=${boundary_target.eks_postgres_admin.id};actions=read,authorize-session",
     "id=${boundary_host_static.eks_db_servers.id};actions=read",
@@ -110,14 +110,14 @@ resource "boundary_role" "db_admin" {
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
-  principal_ids = [var.auth0_managed_group_admin_id, var.okta_managed_group_admin_id, var.azure_managed_group_admin_id]
+  principal_ids = [file("${path.root}/generated/managed_group_admin_id")]
 }
 
 resource "boundary_role" "eks_readonly" {
   name           = "eks_readonly"
   description    = "Access to EKS for Developers"
-  scope_id       = var.org_id
-  grant_scope_id = var.project_id
+  scope_id       = var.boundary_resources.org_id
+  grant_scope_id = var.boundary_resources.project_id
   grant_strings = [
     "id=${boundary_target.eks_readonly.id};actions=read,authorize-session",
     "id=${boundary_host_static.eks_cluster.id};actions=read",
@@ -125,5 +125,5 @@ resource "boundary_role" "eks_readonly" {
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
-  principal_ids = [var.auth0_managed_group_analyst_id, var.okta_managed_group_analyst_id, var.azure_managed_group_analyst_id]
+  principal_ids = [file("${path.root}/generated/managed_group_analyst_id")]
 }

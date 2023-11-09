@@ -5,7 +5,7 @@ resource "kubernetes_config_map" "config" {
 
   data = {
     "boundary-worker.hcl" = "${templatefile("${path.root}/files/boundary/boundary-worker-k8s-configmap.hcl.tpl", {
-      controller_lb_dns = var.boundary_cluster_address_internal,
+      controller_lb_dns = var.infra_aws.boundary_cluster_url_internal,
       public_addr       = kubernetes_service_v1.service.status.0.load_balancer.0.ingress.0.hostname,
       activation_token  = boundary_worker.k8s_worker.controller_generated_activation_token,
     })}"

@@ -57,8 +57,8 @@ resource "kubernetes_config_map_v1" "prometheus_cm" {
   }
   data = {
     "prometheus.yml" = templatefile("${path.root}/files/observability/prometheus.yml.tpl", {
-      controller_ops_address           = var.controller_ops_address,
-      controller_node_exporter_address = var.controller_node_exporter_address,
+      controller_ops_address           = var.infra_aws.controller_ops_address,
+      controller_node_exporter_address = var.infra_aws.controller_node_exporter_address,
       ingress_worker_ip                = var.ingress_worker_ip,
       egress_worker_ip                 = var.egress_worker_ip
     })

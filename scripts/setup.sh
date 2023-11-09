@@ -12,6 +12,10 @@ cp $TFDIR/generated/ssh_key $TFDIR/generated/ssh_key_$DATETIME
 echo '' > $TFDIR/generated/ssh_key
 cp $TFDIR/generated/rsa_key $TFDIR/generated/rsa_$DATETIME 
 echo '' > $TFDIR/generated/rsa_key
+cp $TFDIR/generated/managed_group_admin_id $TFDIR/generated/managed_group_admin_id_$DATETIME 
+echo '' > $TFDIR/generated/managed_group_admin_id
+cp $TFDIR/generated/managed_group_analyst_id $TFDIR/generated/managed_group_analyst_id_$DATETIME 
+echo '' > $TFDIR/generated/managed_group_analyst_id
 
 # cp $TFDIR/generated/global_auth_method_id $TFDIR/generated/global_auth_method_id_$DATETIME 
 # echo '' > $TFDIR/generated/global_auth_method_id 

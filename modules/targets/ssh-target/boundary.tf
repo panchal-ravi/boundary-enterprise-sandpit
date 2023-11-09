@@ -9,7 +9,7 @@ data "aws_region" "current" {}
 resource "boundary_host_catalog_static" "linux_servers" {
   name        = "linux_servers"
   description = "Linux servers"
-  scope_id    = var.project_id
+  scope_id    = var.boundary_resources.project_id
 }
 
 resource "boundary_host_static" "linux_servers" {
@@ -53,8 +53,8 @@ resource "boundary_credential_library_vault_ssh_certificate" "vault-ssh-client-c
 resource "boundary_role" "linux_admin" {
   name           = "linux_admin"
   description    = "Access to Linux hosts for admin role"
-  scope_id       = var.org_id
-  grant_scope_id = var.project_id
+  scope_id       = var.boundary_resources.org_id
+  grant_scope_id = var.boundary_resources.project_id
   grant_strings = [
     "id=${boundary_target.linux_admin.id};actions=read,authorize-session",
     "id=${boundary_host_static.linux_servers.id};actions=read",
@@ -62,7 +62,7 @@ resource "boundary_role" "linux_admin" {
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
-  principal_ids = [var.auth0_managed_group_admin_id, var.okta_managed_group_admin_id, var.azure_managed_group_admin_id]
+  principal_ids = [file("${path.root}/generated/managed_group_admin_id")]
 }
 
 
@@ -70,7 +70,7 @@ resource "boundary_target" "linux_admin" {
   type                     = "ssh"
   name                     = "linux_admin"
   description              = "Linux host access for Admin"
-  scope_id                 = var.project_id
+  scope_id                 = var.boundary_resources.project_id
   session_connection_limit = -1
   default_port             = 22
   ingress_worker_filter    = "\"ingress\" in \"/tags/type\""
@@ -95,10 +95,10 @@ resource "boundary_target" "linux_admin" {
 resource "boundary_storage_bucket" "aws" {
   name            = "global-session-recording-storage"
   description     = "Storage bucket to store session recording"
-  scope_id        = var.org_id
+  scope_id        = var.boundary_resources.org_id
   plugin_name     = "aws"
   bucket_name     = "${var.deployment_id}-session-storage-bucket"
-  attributes_json = jsonencode({ "region" = data.aws_region.current.name, "disable_credential_rotation" = true, "role_arn" = var.session_storage_role_arn })
+  attributes_json = jsonencode({ "region" = data.aws_region.current.name, "disable_credential_rotation" = true, "role_arn" = var.infra_aws.session_storage_role_arn })
 
   # recommended to pass in aws secrets using a file() or using environment variables
   # the secrets below must be generated in aws by creating an aws iam user with programmatic access

@@ -1,33 +1,3 @@
-variable "boundary_cluster_url" {
-  type = string
-}
-
-variable "client_id" {
-  type = string
-}
-
-variable "client_secret" {
-  type = string
-}
-
-variable "auth0_domain" {
-  type = string
-}
-
-variable "okta_client_id" {
-  type = string
-}
-
-variable "okta_client_secret" {
-  type = string
-}
-
-variable "okta_domain" {
-  type = string
-}
-/* variable "bastion_ip" {
-  type = string
-} */
 variable "vault_ip" {
   type = string
 }
@@ -46,20 +16,41 @@ variable "boundary_admin_password" {
   type = string
 }
 
-variable "az_ad_tenant_id" {
+variable "boundary_cluster_url" {
   type = string
 }
 
-variable "az_ad_client_id" {
+/*
+variable "idp_type" {
   type = string
 }
 
-variable "az_ad_client_secret" {
-  type = string
+variable "auth_method_oidc" {
+  type = object({
+    name                 = string
+    description          = string
+    issuer               = string
+    client_id            = string
+    client_secret        = string
+    callback_url         = optional(string)
+    api_url_prefix       = optional(string)
+    signing_algorithms   = optional(list(string))
+    claims_scopes        = optional(list(string))
+    is_primary_for_scope = optional(bool)
+    max_age              = optional(number)
+  })
+  default = {
+    name                 = ""
+    description          = ""
+    issuer               = ""
+    api_url_prefix       = ""
+    callback_url         = ""
+    client_id            = ""
+    client_secret        = ""
+    claims_scopes        = ["profile", "email", "groups"]
+    signing_algorithms   = ["RS256"]
+    is_primary_for_scope = true
+    max_age              = 0
+  }
 }
-variable "az_ad_group_admin_id" {
-  type = string
-}
-variable "az_ad_group_analyst_id" {
-  type = string
-}
+*/

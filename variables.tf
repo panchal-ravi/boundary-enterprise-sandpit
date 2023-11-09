@@ -61,27 +61,34 @@ variable "controller_count" {
 
 variable "auth0_domain" {
   type = string
+  default = ""
 }
 
 variable "auth0_client_id" {
   type = string
+  default = ""
 }
 
 variable "auth0_client_secret" {
   type = string
+  default = ""
 }
 
 variable "okta_api_token" {
   type = string
+  default = ""
 }
 variable "okta_base_url" {
   type = string
+  default = ""
 }
 variable "okta_domain" {
   type = string
+  default = ""
 }
 variable "okta_org_name" {
   type = string
+  default = ""
 }
 
 variable "user_password" {
@@ -89,7 +96,7 @@ variable "user_password" {
 }
 
 variable "localhost" {
-  type = string
+  type    = string
   default = "127.0.0.1"
 }
 
@@ -110,14 +117,25 @@ variable "boundary_admin_password" {
 
 variable "az_ad_tenant_id" {
   type = string
+  default = ""
 }
 
 variable "az_ad_client_id" {
   type = string
+  default = ""
 }
 
 variable "az_ad_client_secret" {
   type = string
+  default = ""
+}
+
+variable "idp_type" {
+  type = string
+  validation {
+    condition     = contains(["azure", "auth0", "okta"], var.idp_type)
+    error_message = "The idp_type must be either 'azure', 'auth0' or 'okta'."
+  }
 }
 
 /* 
@@ -128,5 +146,4 @@ variable "rdp_username" {
 variable "rdp_password" {
   type = string
 } 
-
 */

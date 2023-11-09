@@ -2,7 +2,7 @@
 resource "boundary_host_catalog_static" "db_servers" {
   name        = "db_servers"
   description = "DB servers"
-  scope_id    = var.project_id
+  scope_id    = var.boundary_resources.project_id
 }
 
 resource "boundary_host_static" "db_servers" {
@@ -40,8 +40,8 @@ resource "boundary_credential_library_vault" "vault_db_analyst" {
 resource "boundary_role" "db_analyst" {
   name           = "db_analyst"
   description    = "Access to DB for analyst role"
-  scope_id       = var.org_id
-  grant_scope_id = var.project_id
+  scope_id       = var.boundary_resources.org_id
+  grant_scope_id = var.boundary_resources.project_id
   grant_strings = [
     "id=${boundary_target.postgres_analyst.id};actions=read,authorize-session",
     "id=${boundary_host_static.db_servers.id};actions=read",
@@ -49,14 +49,14 @@ resource "boundary_role" "db_analyst" {
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
-  principal_ids = [var.auth0_managed_group_analyst_id, var.okta_managed_group_analyst_id, var.azure_managed_group_analyst_id]
+  principal_ids = [file("${path.root}/generated/managed_group_analyst_id")]
 }
 
 resource "boundary_role" "db_admin" {
   name           = "db_admin"
   description    = "Access to DB for dba role"
-  scope_id       = var.org_id
-  grant_scope_id = var.project_id
+  scope_id       = var.boundary_resources.org_id
+  grant_scope_id = var.boundary_resources.project_id
   grant_strings = [
     "id=${boundary_target.postgres_admin.id};actions=read,authorize-session",
     "id=${boundary_host_static.db_servers.id};actions=read",
@@ -64,7 +64,7 @@ resource "boundary_role" "db_admin" {
     "id=*;type=target;actions=list,no-op",
     "id=*;type=auth-token;actions=list,read:self,delete:self"
   ]
-  principal_ids = [var.auth0_managed_group_admin_id, var.okta_managed_group_admin_id, var.azure_managed_group_admin_id]
+  principal_ids = [file("${path.root}/generated/managed_group_admin_id")]
 }
 
 
@@ -72,7 +72,7 @@ resource "boundary_target" "postgres_admin" {
   type                     = "tcp"
   name                     = "postgres_admin"
   description              = "Postgres DB target for Admin"
-  scope_id                 = var.project_id
+  scope_id                 = var.boundary_resources.project_id
   session_connection_limit = -1
   default_port             = 5432
   ingress_worker_filter    = "\"ingress\" in \"/tags/type\""
@@ -90,7 +90,7 @@ resource "boundary_target" "postgres_analyst" {
   type                     = "tcp"
   name                     = "postgres_analyst"
   description              = "Postgres DB target for Analyst"
-  scope_id                 = var.project_id
+  scope_id                 = var.boundary_resources.project_id
   session_connection_limit = -1
   default_port             = 5432
   ingress_worker_filter    = "\"ingress\" in \"/tags/type\""
