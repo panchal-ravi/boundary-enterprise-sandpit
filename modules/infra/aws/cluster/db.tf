@@ -25,7 +25,7 @@ resource "aws_db_instance" "this" {
 
 resource "aws_db_parameter_group" "this" {
   name   = "${var.deployment_id}-grp"
-  family = "postgres13"
+  family = "postgres14"
 
   parameter {
     name  = "log_connections"
