@@ -102,13 +102,13 @@ resource "boundary_role" "db_admin" {
   name           = "eks_db_admin"
   description    = "Access to EKS DB for dba role"
   scope_id       = var.boundary_resources.org_id
-  grant_scope_id = var.boundary_resources.project_id
+  grant_scope_ids = [var.boundary_resources.project_id]
   grant_strings = [
-    "id=${boundary_target.eks_postgres_admin.id};actions=read,authorize-session",
-    "id=${boundary_host_static.eks_db_servers.id};actions=read",
-    "id=${boundary_host_set_static.eks_db_servers.id};actions=read",
-    "id=*;type=target;actions=list,no-op",
-    "id=*;type=auth-token;actions=list,read:self,delete:self"
+    "ids=${boundary_target.eks_postgres_admin.id};actions=read,authorize-session",
+    "ids=${boundary_host_static.eks_db_servers.id};actions=read",
+    "ids=${boundary_host_set_static.eks_db_servers.id};actions=read",
+    "ids=*;type=target;actions=list,no-op",
+    "ids=*;type=auth-token;actions=list,read:self,delete:self"
   ]
   principal_ids = [file("${path.root}/generated/managed_group_admin_id")]
 }
@@ -117,13 +117,13 @@ resource "boundary_role" "eks_readonly" {
   name           = "eks_readonly"
   description    = "Access to EKS for Developers"
   scope_id       = var.boundary_resources.org_id
-  grant_scope_id = var.boundary_resources.project_id
+  grant_scope_ids = [var.boundary_resources.project_id]
   grant_strings = [
-    "id=${boundary_target.eks_readonly.id};actions=read,authorize-session",
-    "id=${boundary_host_static.eks_cluster.id};actions=read",
-    "id=${boundary_host_set_static.eks_cluster.id};actions=read",
-    "id=*;type=target;actions=list,no-op",
-    "id=*;type=auth-token;actions=list,read:self,delete:self"
+    "ids=${boundary_target.eks_readonly.id};actions=read,authorize-session",
+    "ids=${boundary_host_static.eks_cluster.id};actions=read",
+    "ids=${boundary_host_set_static.eks_cluster.id};actions=read",
+    "ids=*;type=target;actions=list,no-op",
+    "ids=*;type=auth-token;actions=list,read:self,delete:self"
   ]
   principal_ids = [file("${path.root}/generated/managed_group_analyst_id")]
 }

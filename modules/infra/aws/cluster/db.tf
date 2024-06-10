@@ -13,7 +13,7 @@ resource "aws_db_instance" "this" {
   allocated_storage      = 10
   engine                 = "postgres"
   db_name                = "boundary"
-  engine_version         = "13.7"
+  engine_version         = "14.11"
   username               = var.controller_db_username
   password               = var.controller_db_password
   db_subnet_group_name   = aws_db_subnet_group.this.name

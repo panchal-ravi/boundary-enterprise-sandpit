@@ -6,9 +6,9 @@ resource "boundary_role" "global_anon_listing" {
   name     = "global_anon"
   scope_id = boundary_scope.global.id
   grant_strings = [
-    "id=*;type=auth-method;actions=list,authenticate",
+    "ids=*;type=auth-method;actions=list,authenticate",
     "type=scope;actions=list",
-    "id={{account.id}};actions=read,change-password"
+    "ids={{account.id}};actions=read,change-password"
   ]
   principal_ids = ["u_anon"]
 }
@@ -22,7 +22,7 @@ resource "boundary_role" "global_anon_listing" {
 resource "boundary_role" "global_admin" {
   scope_id      = boundary_scope.global.id
   name          = "global_admin_role"
-  grant_strings = ["id=*;type=*;actions=*"]
+  grant_strings = ["ids=*;type=*;actions=*"]
   principal_ids = [boundary_user.admin.id]
 }
 
@@ -30,7 +30,7 @@ resource "boundary_role" "org_admin" {
   for_each      = local.scopes
   scope_id      = boundary_scope.org[each.key].id
   name          = "org_admin_role"
-  grant_strings = ["id=*;type=*;actions=*"]
+  grant_strings = ["ids=*;type=*;actions=*"]
   principal_ids = [boundary_user.admin.id]
 }
 
@@ -38,7 +38,7 @@ resource "boundary_role" "project_admin" {
   for_each      = local.scopes
   scope_id      = boundary_scope.project[each.key].id
   name          = "project_admin_role"
-  grant_strings = ["id=*;type=*;actions=*"]
+  grant_strings = ["ids=*;type=*;actions=*"]
   principal_ids = [boundary_user.admin.id]
 }
 
@@ -47,9 +47,9 @@ resource "boundary_role" "org_anon_listing" {
   scope_id = boundary_scope.org[each.key].id
   name     = "org_anon"
   grant_strings = [
-    "id=*;type=auth-method;actions=list,authenticate",
+    "ids=*;type=auth-method;actions=list,authenticate",
     "type=scope;actions=list",
-    "id={{account.id}};actions=read,change-password"
+    "ids={{account.id}};actions=read,change-password"
   ]
   principal_ids = ["u_anon"]
 }

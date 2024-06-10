@@ -75,9 +75,12 @@ resource "aws_iam_policy" "session_storage_policy" {
         "Action" : [
           "s3:PutObject",
           "s3:GetObject",
-          "s3:GetObjectAttributes"
+          "s3:GetObjectAttributes",
+          "s3:DeleteObject",
+          "s3:ListBucket"
         ],
         "Resource" : [
+          "${aws_s3_bucket.session_storage.arn}",
           "${aws_s3_bucket.session_storage.arn}/*"
         ]
       },

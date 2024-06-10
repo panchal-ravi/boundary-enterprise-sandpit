@@ -22,13 +22,13 @@ resource "boundary_role" "windows_admin" {
   name           = "windows_admin"
   description    = "Access to Windows hosts for admin role"
   scope_id       = var.boundary_resources.org_id
-  grant_scope_id = var.boundary_resources.project_id
+  grant_scope_ids = [var.boundary_resources.project_id]
   grant_strings = [
-    "id=${boundary_target.windows_admin.id};actions=read,authorize-session",
-    "id=${boundary_host_static.windows_servers.id};actions=read",
-    "id=${boundary_host_set_static.windows_servers.id};actions=read",
-    "id=*;type=target;actions=list,no-op",
-    "id=*;type=auth-token;actions=list,read:self,delete:self"
+    "ids=${boundary_target.windows_admin.id};actions=read,authorize-session",
+    "ids=${boundary_host_static.windows_servers.id};actions=read",
+    "ids=${boundary_host_set_static.windows_servers.id};actions=read",
+    "ids=*;type=target;actions=list,no-op",
+    "ids=*;type=auth-token;actions=list,read:self,delete:self"
   ]
   principal_ids = [file("${path.root}/generated/managed_group_admin_id")]
 }
@@ -37,13 +37,13 @@ resource "boundary_role" "windows_analyst" {
   name           = "windows_analyst"
   description    = "Access to Windows hosts for analyst role"
   scope_id       = var.boundary_resources.org_id
-  grant_scope_id = var.boundary_resources.project_id
+  grant_scope_ids = [var.boundary_resources.project_id]
   grant_strings = [
-    "id=${boundary_target.windows_analyst.id};actions=read,authorize-session",
-    "id=${boundary_host_static.windows_servers.id};actions=read",
-    "id=${boundary_host_set_static.windows_servers.id};actions=read",
-    "id=*;type=target;actions=list,no-op",
-    "id=*;type=auth-token;actions=list,read:self,delete:self"
+    "ids=${boundary_target.windows_analyst.id};actions=read,authorize-session",
+    "ids=${boundary_host_static.windows_servers.id};actions=read",
+    "ids=${boundary_host_set_static.windows_servers.id};actions=read",
+    "ids=*;type=target;actions=list,no-op",
+    "ids=*;type=auth-token;actions=list,read:self,delete:self"
   ]
   principal_ids = [file("${path.root}/generated/managed_group_analyst_id")]
 }

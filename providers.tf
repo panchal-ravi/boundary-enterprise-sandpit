@@ -6,11 +6,11 @@ terraform {
     }
     boundary = {
       source  = "hashicorp/boundary"
-      version = "1.1.9"
+      version = "1.1.15"
     }
     vault = {
       source  = "hashicorp/vault"
-      version = "3.8.2"
+      version = "4.2.0"
     }
 
     auth0 = {

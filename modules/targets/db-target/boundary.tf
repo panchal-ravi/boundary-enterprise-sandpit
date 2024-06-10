@@ -41,13 +41,13 @@ resource "boundary_role" "db_analyst" {
   name           = "db_analyst"
   description    = "Access to DB for analyst role"
   scope_id       = var.boundary_resources.org_id
-  grant_scope_id = var.boundary_resources.project_id
+  grant_scope_ids = [var.boundary_resources.project_id]
   grant_strings = [
-    "id=${boundary_target.postgres_analyst.id};actions=read,authorize-session",
-    "id=${boundary_host_static.db_servers.id};actions=read",
-    "id=${boundary_host_set_static.db_servers.id};actions=read",
-    "id=*;type=target;actions=list,no-op",
-    "id=*;type=auth-token;actions=list,read:self,delete:self"
+    "ids=${boundary_target.postgres_analyst.id};actions=read,authorize-session",
+    "ids=${boundary_host_static.db_servers.id};actions=read",
+    "ids=${boundary_host_set_static.db_servers.id};actions=read",
+    "ids=*;type=target;actions=list,no-op",
+    "ids=*;type=auth-token;actions=list,read:self,delete:self"
   ]
   principal_ids = [file("${path.root}/generated/managed_group_analyst_id")]
 }
@@ -56,13 +56,13 @@ resource "boundary_role" "db_admin" {
   name           = "db_admin"
   description    = "Access to DB for dba role"
   scope_id       = var.boundary_resources.org_id
-  grant_scope_id = var.boundary_resources.project_id
+  grant_scope_ids = [var.boundary_resources.project_id]
   grant_strings = [
-    "id=${boundary_target.postgres_admin.id};actions=read,authorize-session",
-    "id=${boundary_host_static.db_servers.id};actions=read",
-    "id=${boundary_host_set_static.db_servers.id};actions=read",
-    "id=*;type=target;actions=list,no-op",
-    "id=*;type=auth-token;actions=list,read:self,delete:self"
+    "ids=${boundary_target.postgres_admin.id};actions=read,authorize-session",
+    "ids=${boundary_host_static.db_servers.id};actions=read",
+    "ids=${boundary_host_set_static.db_servers.id};actions=read",
+    "ids=*;type=target;actions=list,no-op",
+    "ids=*;type=auth-token;actions=list,read:self,delete:self"
   ]
   principal_ids = [file("${path.root}/generated/managed_group_admin_id")]
 }

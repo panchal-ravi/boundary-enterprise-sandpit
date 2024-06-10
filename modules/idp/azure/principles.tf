@@ -19,11 +19,11 @@ resource "boundary_role" "default_org" {
   for_each       = var.boundary_resources.scopes
   name           = "default_org_${each.key}"
   scope_id       = var.boundary_resources.global_scope_id
-  grant_scope_id = var.boundary_resources.orgs[each.key].id
+  grant_scope_ids = [var.boundary_resources.orgs[each.key].id]
   grant_strings = [
-    "id=${var.boundary_resources.projects[each.key].id};actions=read",
-    "id={{.User.Id}};actions=read",
-    "id=*;type=auth-token;actions=list,read:self,delete:self"
+    "ids=${var.boundary_resources.projects[each.key].id};actions=read",
+    "ids={{.User.Id}};actions=read",
+    "ids=*;type=auth-token;actions=list,read:self,delete:self"
   ]
   /* principal_ids = local.principal_ids[each.key] */
   principal_ids = [boundary_managed_group.db_analyst.id, boundary_managed_group.db_admin.id]
@@ -34,10 +34,10 @@ resource "boundary_role" "default_project" {
   for_each       = var.boundary_resources.scopes
   name           = "default_project"
   scope_id       = var.boundary_resources.orgs[each.key].id
-  grant_scope_id = var.boundary_resources.projects[each.key].id
+  grant_scope_ids = [var.boundary_resources.projects[each.key].id]
   grant_strings = [
-    "id=*;type=session;actions=list,no-op",
-    "id=*;type=session;actions=read:self,cancel:self",
+    "ids=*;type=session;actions=list,no-op",
+    "ids=*;type=session;actions=read:self,cancel:self",
   ]
   /* principal_ids = local.principal_ids[each.key] */
   principal_ids = [boundary_managed_group.db_analyst.id, boundary_managed_group.db_admin.id]

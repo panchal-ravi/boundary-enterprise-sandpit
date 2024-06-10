@@ -134,4 +134,3 @@ module "k8s-target" {
   ingress_worker_ip  = module.boundary-workers.ingress_worker_private_ip
   egress_worker_ip   = module.boundary-workers.egress_worker_ip
 }
-

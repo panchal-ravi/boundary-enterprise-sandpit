@@ -13,7 +13,7 @@ export REMOTE_USER_TOKEN=$(cat $HOME/.credentials/boundary-kube.json | \
   jq '.credentials[] | select(.credential_source.name=="eks_token_readonly")' | \
   jq -r .secret.decoded.service_account_token)
 
-# Save cert from Boundary to file
+# Save cert from Boundary  to file
 cat $HOME/.credentials/boundary-kube.json | \
   jq '.credentials[] | select(.credential_source.name=="eks_ca_crt")' | \
   jq -r .credential.eks_ca_crt | base64 -d > $HOME/.credentials/boundary-kube-cert.crt
