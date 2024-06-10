@@ -47,8 +47,8 @@ provider "boundary" {
 provider "boundary" {
   addr                            = "https://${module.boundary-cluster.infra_aws.boundary_cluster_url}"
   auth_method_id                  = module.boundary-resources.global_auth_method_id
-  password_auth_method_login_name = var.boundary_admin_username
-  password_auth_method_password   = var.boundary_admin_password
+  auth_method_login_name = var.boundary_admin_username
+  auth_method_password   = var.boundary_admin_password
   tls_insecure                    = true
   //recovery_kms_hcl = trimspace(file("${path.root}/generated/kms_recovery.hcl"))
 }
