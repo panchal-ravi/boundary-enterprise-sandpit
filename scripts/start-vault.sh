@@ -1,13 +1,11 @@
 #!/bin/bash
 
-# export BOUNDARY_ADDR=$(cat ./generated/boundary_cluster_url) 
 export BOUNDARY_ADDR=$(terraform output -raw boundary_cluster_url)
 echo "BOUNDARY_ADDR: ${BOUNDARY_ADDR}"
-# export BOUNDARY_AUTHENTICATE_PASSWORD_PASSWORD=$(cat ./generated/boundary_password)
 export BOUNDARY_AUTHENTICATE_PASSWORD_PASSWORD=$TF_VAR_boundary_admin_password
 export BOUNDARY_TLS_INSECURE=true
 export AUTH_ID=$(boundary auth-methods list -scope-id global -format json | jq ".items[].id" -r)
-boundary authenticate password -auth-method-id=$AUTH_ID -login-name=admin -password env://BOUNDARY_AUTHENTICATE_PASSWORD_PASSWORD
+boundary authenticate password -auth-method-id=$AUTH_ID -login-name=$TF_VAR_boundary_admin_username -password env://BOUNDARY_AUTHENTICATE_PASSWORD_PASSWORD
 export PROJECT_ID=$(boundary scopes list -scope-id global -recursive -format json | jq '.items[] | select(.scope.type=="org") | .id' -r)
 export BOUNDARY_CONNECT_TARGET_SCOPE_ID=$PROJECT_ID
 export BOUNDARY_SCOPE_ID=$PROJECT_ID
