@@ -17,8 +17,9 @@ variable "ingress_worker_ip" {
 variable "egress_worker_ip" {
   type = string
 }
-
-
+variable "boundary_version" {
+  type = string
+}
 variable "infra_aws" {
   type = object({
     vpc_cidr_block                   = string

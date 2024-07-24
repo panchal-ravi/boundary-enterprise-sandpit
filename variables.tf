@@ -138,6 +138,10 @@ variable "idp_type" {
   }
 }
 
+variable "boundary_version" {
+  type = string
+}
+
 /* 
 variable "rdp_username" {
   type = string

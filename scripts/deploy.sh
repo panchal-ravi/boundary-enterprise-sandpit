@@ -32,6 +32,14 @@ echo -e "\n\n\n----Creating Boundary Resources----\n\n\n"
 terraform apply -target module.boundary-resources -auto-approve
 sleep 10
 
+
+echo -e "\n\n\n----Creating IDP Resources----\n\n\n"
+
+terraform apply -target module.idp-auth0 -auto-approve
+sleep 10
+
+
+
 echo -e "\n\n\n----Starting Vault Session----\n\n\n"
 while [ $(lsof -i -P -n | grep LISTEN | grep -i 8200 | wc -l) -eq 0 ]
 do

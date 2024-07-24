@@ -129,6 +129,7 @@ module "k8s-target" {
   region             = var.aws_region
   infra_aws          = module.boundary-cluster.infra_aws
   boundary_resources = module.boundary-resources.resources
+  boundary_version   = var.boundary_version
   rds_creds          = local.rds_creds
   vault_credstore_id = module.vault-credstore.vault_credstore_id
   ingress_worker_ip  = module.boundary-workers.ingress_worker_private_ip

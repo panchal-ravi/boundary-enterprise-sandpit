@@ -6,7 +6,7 @@ resource "kubernetes_namespace" "elastic" {
   metadata {
     name = local.elastic_namespace
   }
-  depends_on = [module.eks]
+  # depends_on = [module.eks]
 }
 
 resource "null_resource" "deploy_elastic_stack" {

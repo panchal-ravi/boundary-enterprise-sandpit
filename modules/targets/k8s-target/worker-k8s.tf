@@ -10,6 +10,8 @@ resource "kubernetes_config_map" "config" {
       activation_token  = boundary_worker.k8s_worker.controller_generated_activation_token,
     })}"
   }
+
+  depends_on = [ boundary_worker.k8s_worker ]
 }
 
 
@@ -46,7 +48,7 @@ resource "kubernetes_stateful_set_v1" "statefulset" {
 
       spec {
         container {
-          image   = "hashicorp/boundary-enterprise:0.13-ent"
+          image   = "hashicorp/boundary-enterprise:${var.boundary_version}"
           name    = "boundary-worker"
           command = ["boundary", "server", "-config", "/etc/boundary/boundary-worker.hcl"]
           port {
