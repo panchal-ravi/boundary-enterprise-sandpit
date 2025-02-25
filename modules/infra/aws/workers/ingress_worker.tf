@@ -38,7 +38,6 @@ resource "aws_instance" "ingress_worker" {
       controller_lb_dns       = var.infra_aws.controller_internal_dns,
       private_ip              = self.private_ip,
       public_ip               = self.public_ip,
-      public_ip               = self.public_ip,
       activation_token        = boundary_worker.ingress_worker.controller_generated_activation_token
       worker_auth_storage_kms = random_id.worker_auth_storage_kms.b64_std,
     })

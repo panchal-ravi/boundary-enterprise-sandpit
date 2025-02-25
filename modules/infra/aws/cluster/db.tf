@@ -13,7 +13,7 @@ resource "aws_db_instance" "this" {
   allocated_storage      = 10
   engine                 = "postgres"
   db_name                = "boundary"
-  engine_version         = "14.11"
+  engine_version         = "16.8"
   username               = var.controller_db_username
   password               = var.controller_db_password
   db_subnet_group_name   = aws_db_subnet_group.this.name
@@ -25,7 +25,7 @@ resource "aws_db_instance" "this" {
 
 resource "aws_db_parameter_group" "this" {
   name   = "${var.deployment_id}-grp"
-  family = "postgres14"
+  family = "postgres16"
 
   parameter {
     name  = "log_connections"

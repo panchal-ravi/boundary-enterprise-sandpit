@@ -12,7 +12,7 @@ resource "aws_db_instance" "db_target" {
   instance_class         = "db.t3.micro"
   allocated_storage      = 10
   engine                 = "postgres"
-  engine_version         = "13.13"
+  engine_version         = "16.8"
   username               = var.rds_creds.username
   password               = var.rds_creds.password
   db_subnet_group_name   = aws_db_subnet_group.db_target.name
@@ -24,7 +24,7 @@ resource "aws_db_instance" "db_target" {
 
 resource "aws_db_parameter_group" "db_target" {
   name   = "${var.deployment_id}-db-target-grp"
-  family = "postgres13"
+  family = "postgres16"
 
   parameter {
     name  = "log_connections"

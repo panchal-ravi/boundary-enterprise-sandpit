@@ -6,7 +6,7 @@ terraform {
     }
     boundary = {
       source  = "hashicorp/boundary"
-      version = "1.1.15"
+      version = "1.2.0"
     }
     vault = {
       source  = "hashicorp/vault"
@@ -42,7 +42,6 @@ provider "boundary" {
   //auth_method_id                  = trimspace(file("${path.root}/generated/global_auth_method_id"))
   //password_auth_method_password   = trimspace(file("${path.root}/generated/boundary_password"))
 }
-
 
 provider "boundary" {
   addr                   = "https://${module.boundary-cluster.infra_aws.boundary_cluster_url}"

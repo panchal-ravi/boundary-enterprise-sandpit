@@ -28,7 +28,7 @@ echo -e "\n\n\n----Destroying Boundary Resources----\n\n\n"
 terraform destroy -target module.boundary-resources -auto-approve
 
 echo -e "\n\n\n----Destroying Boundary Workers----\n\n\n"
-terraform apply -target module.boundary-workers -auto-approve
+terraform destroy -target module.boundary-workers -auto-approve
 
 
 echo -e "\n\n\n----Destroying Boundary Cluster----\n\n\n"
